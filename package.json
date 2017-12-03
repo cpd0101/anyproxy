@@ -33,6 +33,9 @@
     "ci": "npm run lint && npm run cov",
     "autod": "autod"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "ci": {
     "version": "8"
   },
