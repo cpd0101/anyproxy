@@ -4,8 +4,10 @@
   "description": "",
   "private": true,
   "dependencies": {
+    "atob": "^2.0.3",
     "egg": "^2.0.0",
-    "egg-scripts": "^2.1.0"
+    "egg-scripts": "^2.1.0",
+    "http-proxy": "^1.16.2"
   },
   "devDependencies": {
     "autod": "^3.0.1",
