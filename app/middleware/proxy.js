@@ -37,11 +37,11 @@ module.exports = (options) => {
         }
       });
       await new Promise((resolve, reject) => {
-        proxy.on('end', function (req, res, proxyRes) {
-          resolve(proxyRes);
-        });
         proxy.on('error', function (err, req, res) {
           reject(err);
+        });
+        proxy.on('end', function (req, res, proxyRes) {
+          resolve(proxyRes);
         });
       });
     } else {
