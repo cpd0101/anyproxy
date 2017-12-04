@@ -3,6 +3,7 @@
 const httpProxy = require('http-proxy');
 const atob = require('atob');
 const parse = require('url-parse');
+const cookie = require('cookie');
 
 const WHITE_LIST = [
   '/',
@@ -10,10 +11,10 @@ const WHITE_LIST = [
 
 module.exports = (options) => {
   return async function proxy(ctx, next) {
-    const refer = parse(ctx.header.referer, true);
-    const target = ctx.query.target || refer.query.target || ctx.cookies.get('target');
-    if ((ctx.query.target || refer.query.target) || (!WHITE_LIST.includes(ctx.path) && ctx.cookies.get('target'))) {
-      ctx.cookies.set('target', target);
+    const refer = parse(ctx.headers.referer, true);
+    const cookies = cookie.parse(ctx.headers.cookie || '');
+    const target = ctx.query.target || refer.query.target || cookies.target;
+    if ((ctx.query.target || refer.query.target) || (!WHITE_LIST.includes(ctx.path) && cookies.target)) {
       const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
       proxy.on('proxyReq', function(proxyReq, req, res, options) {
@@ -28,6 +29,12 @@ module.exports = (options) => {
         headers: {
           referer: targetURL,
         },
+      });
+      proxy.on('proxyRes', function (proxyRes, req, res) {
+        if (!cookies.target) {
+          const set_cookie = proxyRes.headers['set-cookie'] || [];
+          proxyRes.headers['set-cookie'] = set_cookie.concat([`target=${target}; path=/; httponly`]);
+        }
       });
       await new Promise((resolve, reject) => {
         proxy.on('end', function (req, res, proxyRes) {
