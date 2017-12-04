@@ -58,7 +58,7 @@
         e.preventDefault();
         var target = btoa(encodeURI($('input[name="target"]').val()));
         var _csrf = $('input[name="_csrf"]').val();
-        location.href = '/?target=' + target + '&_csrf=' + _csrf;
+        window.open('/proxy?target=' + target + '&_csrf=' + _csrf);
       });
     </script>
   </body>

@@ -27,7 +27,7 @@
     "install-node": "8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --port=80 --daemon",
+    "start": "egg-scripts start --daemon",
     "stop": "egg-scripts stop",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",

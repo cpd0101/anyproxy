@@ -5,17 +5,15 @@ const parse = require('url-parse');
 const cookie = require('cookie');
 const atob = require('atob');
 
-const WHITE_LIST = [
-  '/',
-];
-
-module.exports = (options) => {
+module.exports = ({ whiteList = [] }) => {
   return async function proxy(ctx, next) {
     const refer = parse(ctx.headers.referer, true);
     const cookies = cookie.parse(ctx.headers.cookie || '');
     await next();
-    if ((ctx.query.target || refer.query.target) || (!WHITE_LIST.includes(ctx.path) && cookies.target)) {
-      const target = ctx.query.target || refer.query.target || cookies.target;
+    const target = ctx.query.target || refer.query.target || cookies.target;
+    if (whiteList.includes(ctx.path)) {
+      ctx.cookies.set('target', null);
+    } else if (target) {
       const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
       proxy.on('proxyReq', function(proxyReq, req, res, options) {
@@ -24,11 +22,10 @@ module.exports = (options) => {
       proxy.web(ctx.req, ctx.res, {
         target: targetURL,
         changeOrigin: true,
+        prependPath: !!ctx.query.target,
+        ignorePath: !!ctx.query.target,
         cookieDomainRewrite: {
           '*': ctx.hostname,
-        },
-        headers: {
-          referer: targetURL,
         },
       });
       proxy.on('proxyRes', function (proxyRes, req, res) {
@@ -46,7 +43,7 @@ module.exports = (options) => {
         });
       });
     } else {
-      ctx.cookies.set('target', null);
+
     }
   };
 };

@@ -1,7 +1,11 @@
 'use strict';
 
+const WHITE_LIST = [
+  '/',
+];
+
 function ignore(ctx) {
-  return ctx.path !== '/' || ctx.query.target;
+  return !WHITE_LIST.includes(ctx.path);
 }
 
 module.exports = appInfo => {
@@ -34,6 +38,10 @@ module.exports = appInfo => {
 
   config.meta = {
     ignore,
+  };
+
+  config.proxy = {
+    whiteList: WHITE_LIST,
   };
 
   // add your config here
