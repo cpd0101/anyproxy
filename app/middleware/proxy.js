@@ -2,18 +2,22 @@
 
 const httpProxy = require('http-proxy');
 const parse = require('url-parse');
-const cookie = require('cookie');
 const atob = require('atob');
 
-module.exports = ({ whiteList = [] }) => {
+module.exports = ({ whiteList = [], proxyPath }) => {
   return async function proxy(ctx, next) {
-    const refer = parse(ctx.headers.referer, true);
-    const cookies = cookie.parse(ctx.headers.cookie || '');
     await next();
-    const target = ctx.query.target || refer.query.target || cookies.target;
+    const target = (ctx.path === proxyPath && ctx.query.target) || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path)) {
       ctx.cookies.set('target', null);
     } else if (target) {
+      if (ctx.path === proxyPath) {
+        ctx.assertCsrf();
+        const refer = parse(ctx.headers.referer, true);
+        if (refer.hostname !== ctx.hostname) {
+          return ctx.redirect('/');
+        }
+      }
       const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
       proxy.on('proxyReq', function(proxyReq, req, res, options) {
@@ -22,16 +26,17 @@ module.exports = ({ whiteList = [] }) => {
       proxy.web(ctx.req, ctx.res, {
         target: targetURL,
         changeOrigin: true,
-        prependPath: !!ctx.query.target,
-        ignorePath: !!ctx.query.target,
+        prependPath: ctx.path === proxyPath,
+        ignorePath: ctx.path === proxyPath,
         cookieDomainRewrite: {
           '*': ctx.hostname,
         },
       });
       proxy.on('proxyRes', function (proxyRes, req, res) {
-        if (!cookies.target) {
+        if (ctx.path === proxyPath) {
+          ctx.cookies.set('target', target);
           const set_cookie = proxyRes.headers['set-cookie'] || [];
-          proxyRes.headers['set-cookie'] = set_cookie.concat([`target=${target}; path=/; httponly`]);
+          proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
         }
       });
       await new Promise((resolve, reject) => {
@@ -43,7 +48,7 @@ module.exports = ({ whiteList = [] }) => {
         });
       });
     } else {
-
+      ctx.redirect('/');
     }
   };
 };

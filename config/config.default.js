@@ -42,6 +42,7 @@ module.exports = appInfo => {
 
   config.proxy = {
     whiteList: WHITE_LIST,
+    proxyPath: '/proxy',
   };
 
   // add your config here
