@@ -1,7 +1,6 @@
 'use strict';
 
 const httpProxy = require('http-proxy');
-const atob = require('atob');
 const parse = require('url-parse');
 const cookie = require('cookie');
 
@@ -15,19 +14,18 @@ module.exports = (options) => {
     const cookies = cookie.parse(ctx.headers.cookie || '');
     const target = ctx.query.target || refer.query.target || cookies.target;
     if ((ctx.query.target || refer.query.target) || (!WHITE_LIST.includes(ctx.path) && cookies.target)) {
-      const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
       proxy.on('proxyReq', function(proxyReq, req, res, options) {
-        proxyReq.setHeader('referer', targetURL);
+        proxyReq.setHeader('referer', target);
       });
       proxy.web(ctx.req, ctx.res, {
-        target: targetURL,
+        target: target,
         changeOrigin: true,
         cookieDomainRewrite: {
           '*': ctx.hostname,
         },
         headers: {
-          referer: targetURL,
+          referer: target,
         },
       });
       proxy.on('proxyRes', function (proxyRes, req, res) {
@@ -41,7 +39,7 @@ module.exports = (options) => {
           reject(err);
         });
         proxy.on('end', function (req, res, proxyRes) {
-          resolve(proxyRes);
+          resolve();
         });
       });
     } else {

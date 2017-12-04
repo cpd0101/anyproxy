@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>anyproxy</title>
+  </head>
+  <body>
+    <form method="get">
+      <p>您要访问的Url地址:</p>
+      <p><input type="text" name="target" /></p>
+      <p><input type="submit" value="proxy it" /></p>
+    </form>
+  </body>
+</html>
