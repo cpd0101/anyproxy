@@ -1,12 +1,51 @@
 <html>
   <head>
-    <title>anyproxy</title>
+    <title>AnyProxy 免费在线网页代理</title>
+    <link rel="shortcut icon" href="https://gw.alipayobjects.com/zos/rmsportal/mJPbSMwdyPdYhqbaBQEH.ico" /> 
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
-    <form method="get">
-      <p>您要访问的Url地址:</p>
-      <p><input type="text" name="target" /></p>
-      <p><input type="submit" value="proxy it" /></p>
+    <div class="text-center" style="margin: 60px 0;"><h2>免费在线网页代理</h2></div>
+    <div class="text-center" style="margin: 60px 0;">
+      <img src="https://gw.alipayobjects.com/zos/rmsportal/FJrklaArEKLGDTXPvmDW.png" />
+    </div>
+    <form style="margin: 60px 0;">
+      <div class="row">
+          <div class="col-md-5 col-md-offset-3">
+            <div class="form-group">
+              <input type="url" class="form-control" name="target" placeholder="您要访问的URL地址">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Go!!!</button>
+          </div>
+      </div>
     </form>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+      <p class="text-center">【免责声明】</p>
+      <p>
+        AnyProxy 致力于提供合理、准确、完整的资讯信息，但不保证信息的合理性、准确性和完整性，且不对因信息的不合理、不准确或遗漏导致的任何损失或损害承担责任。并且本网站的访问者应当恪守下述原则：
+        <br />
+        1、传输和利用信息符合中国法律、国际公约的规定、符合公序良俗;
+        <br />
+        2、不将本网站以及与之相关的网络服务用作非法用途以及非正当用途;
+        <br />
+        3、不干扰和扰乱本网站以及与之相关的网络服务;
+        <br />
+        4、遵守与本网站以及与之相关的网络服务的协议、规定、程序和惯例等;
+      </p>
+      </div>
+    </div>
+    <script>
+      $('form').on('submit', function (e) {
+        e.preventDefault();
+        var target = btoa(encodeURI($('input[name="target"]').val()));
+        var _csrf = $('input[name="_csrf"]').val();
+        location.href = '/?target=' + target + '&_csrf=' + _csrf;
+      });
+    </script>
   </body>
 </html>
