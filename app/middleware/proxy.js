@@ -12,11 +12,11 @@ module.exports = ({ whiteList = [], proxyPath }) => {
       ctx.cookies.set('target', null);
     } else if (target) {
       if (ctx.path === proxyPath) {
-        ctx.assertCsrf();
-        const refer = parse(ctx.headers.referer, true);
-        if (refer.hostname !== ctx.hostname) {
+        const referer = parse(ctx.headers.referer, true);
+        if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
         }
+        ctx.assertCsrf();
       }
       const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
