@@ -7,11 +7,12 @@ const atob = require('atob');
 module.exports = ({ whiteList = [], proxyPath }) => {
   return async function proxy(ctx, next) {
     await next();
-    const target = (ctx.path === proxyPath && ctx.query.target) || ctx.cookies.get('target');
+    const targetRequest = ctx.path === proxyPath && ctx.query.target;
+    const target = targetRequest || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path)) {
       ctx.cookies.set('target', null);
     } else if (target) {
-      if (ctx.path === proxyPath) {
+      if (targetRequest) {
         const referer = parse(ctx.headers.referer, true);
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
@@ -26,14 +27,14 @@ module.exports = ({ whiteList = [], proxyPath }) => {
       proxy.web(ctx.req, ctx.res, {
         target: targetURL,
         changeOrigin: true,
-        prependPath: ctx.path === proxyPath,
-        ignorePath: ctx.path === proxyPath,
+        prependPath: targetRequest,
+        ignorePath: targetRequest,
         cookieDomainRewrite: {
           '*': ctx.hostname,
         },
       });
       proxy.on('proxyRes', function (proxyRes, req, res) {
-        if (ctx.path === proxyPath) {
+        if (targetRequest && ctx.query.nocookie !== 'true') {
           ctx.cookies.set('target', target);
           const set_cookie = proxyRes.headers['set-cookie'] || [];
           proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
