@@ -9,8 +9,11 @@
     })();
   </script>
   <head>
-    <title>AnyProxy 免费在线网页代理</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="keywords" content="Free, Online, Web, Any, Proxy, 免费, 在线, 网页, 代理, 国外, AnyProxy" />
+    <meta name="description" content="Free Online Web Proxy 免费在线网页代理" />
     <link rel="shortcut icon" href="https://gw.alipayobjects.com/zos/rmsportal/mJPbSMwdyPdYhqbaBQEH.ico" /> 
+    <title>AnyProxy 免费在线网页代理</title>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
