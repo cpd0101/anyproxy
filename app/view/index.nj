@@ -9,7 +9,9 @@
   <body>
     <div class="text-center" style="margin: 60px 0;"><h2>免费在线网页代理</h2></div>
     <div class="text-center" style="margin: 60px 0;">
-      <img src="https://gw.alipayobjects.com/zos/rmsportal/FJrklaArEKLGDTXPvmDW.png" />
+      <a href="/">
+        <img src="https://gw.alipayobjects.com/zos/rmsportal/FJrklaArEKLGDTXPvmDW.png" />
+      </a>
     </div>
     <form style="margin: 60px 0;">
       <div class="row">
