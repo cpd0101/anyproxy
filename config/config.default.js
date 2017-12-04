@@ -1,5 +1,9 @@
 'use strict';
 
+function ignore(ctx) {
+  return ctx.path !== '/' || ctx.query.target;
+}
+
 module.exports = appInfo => {
   const config = exports = {};
 
@@ -11,6 +15,25 @@ module.exports = appInfo => {
     mapping: {
       '.nj': 'nunjucks',
     },
+  };
+
+  config.security = {
+    xframe: {
+      ignore,
+    },
+    xssProtection: {
+      ignore,
+    },
+    nosniff: {
+      ignore,
+    },
+    noopen: {
+      ignore,
+    },
+  };
+
+  config.meta = {
+    ignore,
   };
 
   // add your config here

@@ -1,4 +1,13 @@
 <html>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
   <head>
     <title>AnyProxy 免费在线网页代理</title>
     <link rel="shortcut icon" href="https://gw.alipayobjects.com/zos/rmsportal/mJPbSMwdyPdYhqbaBQEH.ico" /> 

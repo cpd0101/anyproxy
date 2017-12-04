@@ -13,8 +13,9 @@ module.exports = (options) => {
   return async function proxy(ctx, next) {
     const refer = parse(ctx.headers.referer, true);
     const cookies = cookie.parse(ctx.headers.cookie || '');
-    const target = ctx.query.target || refer.query.target || cookies.target;
+    await next();
     if ((ctx.query.target || refer.query.target) || (!WHITE_LIST.includes(ctx.path) && cookies.target)) {
+      const target = ctx.query.target || refer.query.target || cookies.target;
       const targetURL = decodeURI(atob(target));
       const proxy = httpProxy.createProxyServer({});
       proxy.on('proxyReq', function(proxyReq, req, res, options) {
@@ -46,7 +47,6 @@ module.exports = (options) => {
       });
     } else {
       ctx.cookies.set('target', null);
-      await next();
     }
   };
 };
