@@ -27,8 +27,8 @@ module.exports = ({ whiteList = [], proxyPath }) => {
       proxy.web(ctx.req, ctx.res, {
         target: targetURL,
         changeOrigin: true,
-        prependPath: targetRequest,
-        ignorePath: targetRequest,
+        prependPath: !!targetRequest,
+        ignorePath: !!targetRequest,
         cookieDomainRewrite: {
           '*': ctx.hostname,
         },
