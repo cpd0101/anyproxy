@@ -48,10 +48,19 @@ function setAttribute(attrs, name, value) {
 }
 
 function detectHeader(res, key, value) {
-  if (res.headers[key] && toLowerCase(res.headers[key]).indexOf(toLowerCase(value)) !== -1) {
+  if (res.headers[key] && toLowerCase(res.headers[key]).indexOf(toLowerCase(value)) > -1) {
     return true;
   }
   return false;
+}
+
+function isGoogleSearch(ctx, target) {
+  const targetURL = url.parse(decodeURI(atob(target)));
+  if (targetURL.host && targetURL.host.indexOf('google.com') > -1 && ctx.path === '/search') {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function getProxyURL(ctx, src, nocookie = 'true') {
@@ -175,7 +184,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
       ctx.cookies.set('target', null);
     } else if (target) {
-      if (targetRequest) {
+      if (targetRequest || isGoogleSearch(target)) {
         const referer = url.parse(ctx.headers.referer || '');
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
