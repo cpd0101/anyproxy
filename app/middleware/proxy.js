@@ -75,7 +75,7 @@ function getProxyURL(ctx, src, nocookie = 'true') {
       if (targetURL.protocol) {
         srcURL.protocol = targetURL.protocol;
       }
-      return `/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf}&nocookie=${nocookie}`;
+      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf || ''}&nocookie=${nocookie}`;
     }
   }
   return src;
