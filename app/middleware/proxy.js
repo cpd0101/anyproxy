@@ -175,7 +175,6 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
         }
-        // ctx.assertCsrf();
         if (!ctx.query.nocookie) {
           const response = httpMocks.createResponse();
           await doProxy(ctx, ctx.req, response, {
