@@ -72,7 +72,7 @@ function getProxyURL(ctx, src) {
   return src;
 }
 
-function handleNode(ctx, node) {
+function handleNode(ctx, node, index = 0) {
   if (!node) {
     return;
   }
@@ -98,8 +98,8 @@ function handleNode(ctx, node) {
     const src = getAttribute(node.attrs, 'src');
     setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
   }
-  if (Array.isArray(node.childNodes)) {
-    node.childNodes.map(childNode => handleNode(ctx, childNode));
+  if (Array.isArray(node.childNodes) && index < 25) {
+    node.childNodes.map(childNode => handleNode(ctx, childNode, ++index));
   }
 }
 
