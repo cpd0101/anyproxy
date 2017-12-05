@@ -54,7 +54,7 @@ function detectHeader(res, key, value) {
   return false;
 }
 
-function getProxyURL(ctx, src) {
+function getProxyURL(ctx, src, nocookie = 'true') {
   if (typeof src === 'string') {
     if (/^\/\//.test(src)) {
       src = 'http:' + src;
@@ -66,7 +66,7 @@ function getProxyURL(ctx, src) {
       if (targetURL.protocol) {
         srcURL.protocol = targetURL.protocol;
       }
-      return `/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf}&nocookie=true`;
+      return `/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf}&nocookie=${nocookie}`;
     }
   }
   return src;
@@ -97,6 +97,10 @@ function handleNode(ctx, node, index = 0) {
   if (toLowerCase(node.tagName) === 'img') {
     const src = getAttribute(node.attrs, 'src');
     setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
+  }
+  if (toLowerCase(node.tagName) === 'a') {
+    const href = getAttribute(node.attrs, 'href');
+    setAttribute(node.attrs, 'href', getProxyURL(ctx, href, ''));
   }
   if (Array.isArray(node.childNodes) && index < 25) {
     node.childNodes.map(childNode => handleNode(ctx, childNode, ++index));
