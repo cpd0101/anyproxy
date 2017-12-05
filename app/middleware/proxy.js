@@ -4,12 +4,13 @@ const httpProxy = require('http-proxy');
 const parse = require('url-parse');
 const atob = require('atob');
 
-module.exports = ({ whiteList = [], proxyPath }) => {
+module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
   return async function proxy(ctx, next) {
     await next();
     const targetRequest = ctx.path === proxyPath && ctx.query.target;
     const target = targetRequest || ctx.cookies.get('target');
-    if (whiteList.includes(ctx.path)) {
+    const redirect = ctx.cookies.get('redirect');
+    if (whiteList.includes(ctx.path) && !redirect) {
       ctx.cookies.set('target', null);
     } else if (target) {
       if (targetRequest) {
@@ -29,13 +30,30 @@ module.exports = ({ whiteList = [], proxyPath }) => {
         changeOrigin: true,
         prependPath: !!targetRequest,
         ignorePath: !!targetRequest,
+        autoRewrite: true,
+        protocolRewrite: 'http',
         cookieDomainRewrite: {
           '*': ctx.hostname,
         },
       });
       proxy.on('proxyRes', function (proxyRes, req, res) {
+        let hasSetCookie = false;
         if (targetRequest && ctx.query.nocookie !== 'true') {
           ctx.cookies.set('target', target);
+          hasSetCookie = true;
+        }
+        if (redirectStatusCode.includes(proxyRes.statusCode) && !redirect) {
+          const redirectURL = parse(proxyRes.headers['location'], true);
+          if (whiteList.includes(redirectURL.pathname)) {
+            ctx.cookies.set('redirect', redirectURL.pathname);
+            hasSetCookie = true;
+          }
+        }
+        if (redirect === ctx.path) {
+          ctx.cookies.set('redirect', null);
+          hasSetCookie = true;
+        }
+        if (hasSetCookie) {
           const set_cookie = proxyRes.headers['set-cookie'] || [];
           proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
         }
