@@ -57,6 +57,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
           const set_cookie = proxyRes.headers['set-cookie'] || [];
           proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
         }
+        delete proxyRes.headers['content-security-policy'];
       });
       await new Promise((resolve, reject) => {
         proxy.on('error', function (err, req, res) {
