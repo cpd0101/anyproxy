@@ -120,6 +120,7 @@ async function doProxy(ctx, req, res, options) {
     cookieDomainRewrite: {
       '*': ctx.hostname,
     },
+    proxyTimeout: 15 * 1000,
   });
   proxy.on('proxyRes', function (proxyRes, req, res) {
     const content_length = proxyRes.headers['content-length'];
