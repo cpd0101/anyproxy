@@ -184,7 +184,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
       ctx.cookies.set('target', null);
     } else if (target) {
-      if (targetRequest || isGoogleSearch(ctx, target)) {
+      if (targetRequest) {
         const referer = url.parse(ctx.headers.referer || '');
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
