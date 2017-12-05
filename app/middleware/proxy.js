@@ -37,8 +37,10 @@ async function doProxy(ctx, req, res, options) {
     },
   });
   proxy.on('proxyRes', function (proxyRes, req, res) {
+    const content_length = proxyRes.headers['content-length'];
     if (!isStream && !(detectHeader(proxyRes, 'content-type', 'text') || detectHeader(proxyRes, 'content-type', 'image') ||
-      detectHeader(proxyRes, 'content-type', 'javascript') || detectHeader(proxyRes, 'content-type', 'css'))) {
+      detectHeader(proxyRes, 'content-type', 'javascript') || detectHeader(proxyRes, 'content-type', 'css') ||
+      (!detectHeader(proxyRes, 'transfer-encoding', 'chunked') && content_length && content_length <= 500 * 1024 * 8))) {
       proxyRes.destroy(new Error('403 Forbidden'));
     }
     let hasSetCookie = false;
@@ -48,7 +50,7 @@ async function doProxy(ctx, req, res, options) {
     }
     const redirect = ctx.cookies.get('redirect');
     if (redirectRegex.test(proxyRes.statusCode) && !redirect) {
-      const redirectURL = url.parse(proxyRes.headers['location']);
+      const redirectURL = url.parse(proxyRes.headers['location'] || '');
       if (whiteList.includes(redirectURL.path)) {
         ctx.cookies.set('redirect', redirectURL.path);
         hasSetCookie = true;
@@ -84,7 +86,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
       ctx.cookies.set('target', null);
     } else if (target) {
       if (targetRequest) {
-        const referer = url.parse(ctx.headers.referer);
+        const referer = url.parse(ctx.headers.referer || '');
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
         }
@@ -104,7 +106,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
               break;
             }
           }
-          if (detectHeader(response, 'content-type', 'text/html')) {
+          if (detectHeader(response, 'content-type', 'text/html') && detectHeader(response, 'content-type', 'utf-8')) {
             if (detectHeader(response, 'content-encoding', 'gzip')) {
               const html = zlib.gunzipSync(response._getBuffer());
               ctx.body = zlib.gzipSync(html);
