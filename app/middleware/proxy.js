@@ -1,21 +1,106 @@
 'use strict';
 
-const httpProxy = require('http-proxy');
 const url = require('url');
-const atob = require('atob');
-const httpMocks = require('node-mocks-http-self');
 const zlib = require('zlib');
+const httpProxy = require('http-proxy');
+const httpMocks = require('node-mocks-http-self');
+const parse5 = require('parse5');
 
 let web_o = require('http-proxy/lib/http-proxy/passes/web-outgoing');
 web_o = Object.keys(web_o).map(function(pass) {
   return web_o[pass];
 });
 
+function atob(str) {
+  return new Buffer(str, 'base64').toString('binary');
+}
+
+function btoa(str) {
+  return new Buffer(str, 'binary').toString('base64');
+}
+
+function toLowerCase(str) {
+  if (typeof str === 'string') {
+    return str.toLowerCase();
+  }
+  return str;
+}
+
+function getAttribute(attrs, name) {
+  if (Array.isArray(attrs)) {
+    for (let i = 0; i < attrs.length; i++) {
+      if (toLowerCase(attrs[i].name) === name) {
+        return attrs[i].value;
+      }
+    }
+  }
+}
+
+function setAttribute(attrs, name, value) {
+  if (Array.isArray(attrs)) {
+    attrs.map((attr) => {
+      if (attr && (toLowerCase(attr.name) === name)) {
+        attr.value = value;
+      }
+      return attr;
+    });
+  }
+}
+
 function detectHeader(res, key, value) {
-  if (res.headers[key] && res.headers[key].indexOf(value) !== -1) {
+  if (res.headers[key] && toLowerCase(res.headers[key]).indexOf(toLowerCase(value)) !== -1) {
     return true;
   }
   return false;
+}
+
+function getProxyURL(ctx, src) {
+  if (typeof src === 'string') {
+    if (/^\/\//.test(src)) {
+      src = 'http:' + src;
+    }
+    const srcURL = url.parse(src);
+    if (srcURL.host && srcURL.host !== ctx.host) {
+      const target = decodeURI(atob(ctx.query.target));
+      const targetURL = url.parse(target);
+      if (targetURL.protocol) {
+        srcURL.protocol = targetURL.protocol;
+      }
+      return `/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf}&nocookie=true`;
+    }
+  }
+  return src;
+}
+
+function handleNode(ctx, node) {
+  if (!node) {
+    return;
+  }
+  if (toLowerCase(node.tagName) === 'meta') {
+    const http_equiv = toLowerCase(getAttribute(node.attrs, 'http-equiv'));
+    if (http_equiv === 'content-security-policy' || http_equiv === 'content-security-policy-report-only') {
+      setAttribute(node.attrs, 'http-equiv', '');
+    }
+  }
+  if (toLowerCase(node.tagName) === 'link') {
+    const href = getAttribute(node.attrs, 'href');
+    const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
+    const type = toLowerCase(getAttribute(node.attrs, 'type'));
+    if (rel === 'stylesheet' || type === 'text/css') {
+      setAttribute(node.attrs, 'href', getProxyURL(ctx, href));
+    }
+  }
+  if (toLowerCase(node.tagName) === 'script') {
+    const src = getAttribute(node.attrs, 'src');
+    setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
+  }
+  if (toLowerCase(node.tagName) === 'img') {
+    const src = getAttribute(node.attrs, 'src');
+    setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
+  }
+  if (Array.isArray(node.childNodes)) {
+    node.childNodes.map(childNode => handleNode(ctx, childNode));
+  }
 }
 
 async function doProxy(ctx, req, res, options) {
@@ -106,10 +191,13 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
               break;
             }
           }
-          if (detectHeader(response, 'content-type', 'text/html') && detectHeader(response, 'content-type', 'utf-8')) {
+          if (detectHeader(response, 'content-type', 'text/html') &&
+            (detectHeader(response, 'content-type', 'utf-8') || !detectHeader(response, 'content-type', 'charset'))) {
             if (detectHeader(response, 'content-encoding', 'gzip')) {
               const html = zlib.gunzipSync(response._getBuffer());
-              ctx.body = zlib.gzipSync(html);
+              const document = parse5.parse(html.toString());
+              handleNode(ctx, document);
+              ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
               return;
             }
           }
