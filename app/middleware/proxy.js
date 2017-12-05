@@ -70,7 +70,7 @@ function getProxyURL(ctx, src, nocookie = 'true') {
     }
     const srcURL = url.parse(src);
     if (srcURL.host && srcURL.host !== ctx.host) {
-      const target = decodeURI(atob(ctx.query.target));
+      const target = decodeURI(atob(ctx.query.target || ctx.cookies.get('target') || ''));
       const targetURL = url.parse(target);
       if (targetURL.protocol) {
         srcURL.protocol = targetURL.protocol;
@@ -184,7 +184,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
       ctx.cookies.set('target', null);
     } else if (target) {
-      if (targetRequest || isGoogleSearch(target)) {
+      if (targetRequest || isGoogleSearch(ctx, target)) {
         const referer = url.parse(ctx.headers.referer || '');
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
