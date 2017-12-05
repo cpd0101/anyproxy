@@ -1,7 +1,7 @@
 'use strict';
 
 const httpProxy = require('http-proxy');
-const parse = require('url-parse');
+const url = require('url');
 const atob = require('atob');
 
 module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
@@ -14,7 +14,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
       ctx.cookies.set('target', null);
     } else if (target) {
       if (targetRequest) {
-        const referer = parse(ctx.headers.referer, true);
+        const referer = url.parse(ctx.headers.referer);
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
         }
@@ -43,9 +43,9 @@ module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
           hasSetCookie = true;
         }
         if (redirectStatusCode.includes(proxyRes.statusCode) && !redirect) {
-          const redirectURL = parse(proxyRes.headers['location'], true);
-          if (whiteList.includes(redirectURL.pathname)) {
-            ctx.cookies.set('redirect', redirectURL.pathname);
+          const redirectURL = url.parse(proxyRes.headers['location']);
+          if (whiteList.includes(redirectURL.path)) {
+            ctx.cookies.set('redirect', redirectURL.path);
             hasSetCookie = true;
           }
         }
