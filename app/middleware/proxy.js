@@ -175,7 +175,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         if (referer.hostname !== ctx.hostname) {
           return ctx.redirect('/');
         }
-        ctx.assertCsrf();
+        // ctx.assertCsrf();
         if (!ctx.query.nocookie) {
           const response = httpMocks.createResponse();
           await doProxy(ctx, ctx.req, response, {
@@ -191,7 +191,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
               break;
             }
           }
-          if (detectHeader(response, 'content-type', 'text/html') &&
+          if (response.statusCode === 200 && detectHeader(response, 'content-type', 'text/html') &&
             (detectHeader(response, 'content-type', 'utf-8') || !detectHeader(response, 'content-type', 'charset'))) {
             if (detectHeader(response, 'content-encoding', 'gzip')) {
               const html = zlib.gunzipSync(response._getBuffer());

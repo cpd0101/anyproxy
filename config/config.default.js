@@ -5,7 +5,7 @@ const WHITE_LIST = [
 ];
 
 function ignore(ctx) {
-  return !WHITE_LIST.includes(ctx.path);
+  return !WHITE_LIST.includes(ctx.path) || ctx.cookies.get('redirect');
 }
 
 module.exports = appInfo => {
