@@ -4,14 +4,6 @@ const WHITE_LIST = [
   '/',
 ];
 
-const REDIRECT_STATUS_CODE = [
-  201,
-  301,
-  302,
-  307,
-  308,
-];
-
 function ignore(ctx) {
   return !WHITE_LIST.includes(ctx.path);
 }
@@ -51,7 +43,7 @@ module.exports = appInfo => {
   config.proxy = {
     whiteList: WHITE_LIST,
     proxyPath: '/proxy',
-    redirectStatusCode: REDIRECT_STATUS_CODE,
+    redirectRegex: /^201|30(1|2|7|8)$/,
   };
 
   // add your config here

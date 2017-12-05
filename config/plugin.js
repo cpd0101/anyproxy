@@ -5,5 +5,5 @@
 
 exports.nunjucks = {
   enable: true,
-  package: 'egg-view-nunjucks'
+  package: 'egg-view-nunjucks',
 };
