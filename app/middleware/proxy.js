@@ -30,7 +30,6 @@ module.exports = ({ whiteList = [], proxyPath, redirectStatusCode = [] }) => {
         changeOrigin: true,
         prependPath: !!targetRequest,
         ignorePath: !!targetRequest,
-        hostRewrite: true,
         autoRewrite: true,
         protocolRewrite: 'http',
         cookieDomainRewrite: {
