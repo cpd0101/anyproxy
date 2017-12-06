@@ -2,7 +2,7 @@
 
 const Controller = require('egg').Controller;
 
-class HomeController extends Controller {
+class FeedbackController extends Controller {
   async index() {
     let name = 'AnyProxy';
     let logo = 'https://gw.alipayobjects.com/zos/rmsportal/vxuJMojdlMCwzDjREKzY.png';
@@ -10,7 +10,7 @@ class HomeController extends Controller {
       name = 'ProxyIt';
       logo = 'https://gw.alipayobjects.com/zos/rmsportal/ElfMNcmrhlPiYPrETnWI.png';
     }
-    await this.ctx.render('index.nj', {
+    await this.ctx.render('feedback.nj', {
       name,
       logo,
       year: new Date().getFullYear(),
@@ -18,4 +18,4 @@ class HomeController extends Controller {
   }
 }
 
-module.exports = HomeController;
+module.exports = FeedbackController;

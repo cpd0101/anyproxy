@@ -2,6 +2,7 @@
 
 const WHITE_LIST = [
   '/',
+  '/feedback',
 ];
 
 function ignore(ctx) {

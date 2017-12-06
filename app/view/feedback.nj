@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="keywords" content="Free, Online, Web, Proxy, 免费, 在线, 网页, 代理, 国外, 意见, 反馈, {{ name }}" />
+    <meta name="description" content="Free Online Web Proxy 免费在线网页代理" />
+    <link rel="shortcut icon" href="/public/favicon.ico" /> 
+    <title>{{ name }} 意见反馈</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="text-center" style="margin: 60px 0;">
+      <a target="_blank" href="/">
+        <img src="{{ logo }}" />
+      </a>
+    </div>
+    <div id="uyan_frame" style="margin: 45px 90px;"></div>
+    <div class="text-center" style="padding: 15px;">&copy;{{ year }}&nbsp;<a target="_blank" href="/">{{ name }}</a></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2151281"></script>
+    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+  </body>
+</html>

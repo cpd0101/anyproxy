@@ -1,18 +1,16 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="keywords" content="Free, Online, Web, Proxy, 免费, 在线, 网页, 代理, 国外, AnyProxy" />
+    <meta name="keywords" content="Free, Online, Web, Proxy, 免费, 在线, 网页, 代理, 国外, {{ name }}" />
     <meta name="description" content="Free Online Web Proxy 免费在线网页代理" />
     <link rel="shortcut icon" href="/public/favicon.ico" /> 
-    <title>AnyProxy 免费在线网页代理</title>
+    <title>{{ name }} 免费在线网页代理</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
   </head>
   <body>
     <div class="text-center" style="margin: 60px 0;"><h2>免费在线网页代理</h2></div>
     <div class="text-center" style="margin: 60px 0;">
-      <a href="/">
-        <img src="https://gw.alipayobjects.com/zos/rmsportal/vxuJMojdlMCwzDjREKzY.png" />
-      </a>
+      <img src="{{ logo }}" />
     </div>
     <form style="margin: 60px 0;">
       <div class="row">
@@ -26,11 +24,11 @@
           </div>
       </div>
     </form>
-    <div class="row">
+    <div class="row" style="margin: 60px 0;">
       <div class="col-md-6 col-md-offset-3">
       <p class="text-center">【免责声明】</p>
       <p>
-        AnyProxy 致力于提供合理、准确、完整的资讯信息，但不保证信息的合理性、准确性和完整性，且不对因信息的不合理、不准确或遗漏导致的任何损失或损害承担责任，并且本网站的访问者应当恪守下述原则：
+        {{ name }} 致力于提供合理、准确、完整的资讯信息，但不保证信息的合理性、准确性和完整性，且不对因信息的不合理、不准确或遗漏导致的任何损失或损害承担责任，并且本网站的访问者应当恪守下述原则：
         <br />
         1、传输和利用信息符合中国法律、国际公约的规定、符合公序良俗;
         <br />
@@ -42,10 +40,9 @@
       </p>
       </div>
     </div>
+    <div class="text-center" style="padding: 15px;">&copy;{{ year }}&nbsp;{{ name }}&nbsp;<a target="_blank" href="/feedback">意见反馈</a></div>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/rmsportal/PGCnHSklorQGuDaFjAyc.js"></script>
-    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
     <script>
       $('form').on('submit', function (e) {
         e.preventDefault();
@@ -61,5 +58,6 @@
         return 'Are you sure to leave?';
       };
     </script>
+    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
   </body>
 </html>
