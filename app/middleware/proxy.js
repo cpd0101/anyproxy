@@ -75,7 +75,7 @@ function getProxyURL(ctx, src, nocookie = 'true') {
       if (targetURL.protocol) {
         srcURL.protocol = targetURL.protocol;
       }
-      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.csrf || ctx.query._csrf || ctx.cookies.get('csrfToken') || ''}&nocookie=${nocookie}`;
+      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(encodeURI(srcURL.format()))}&_csrf=${ctx.csrf || ctx.query._csrf || ctx.cookies.get('csrfToken') || ''}&nocookie=${nocookie}`;
     }
   }
   return src;
