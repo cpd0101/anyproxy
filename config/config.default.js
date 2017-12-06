@@ -34,6 +34,9 @@ module.exports = appInfo => {
     noopen: {
       ignore,
     },
+    csrf: {
+      ignore,
+    },
   };
 
   config.meta = {
