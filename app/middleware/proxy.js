@@ -75,13 +75,13 @@ function getProxyURL(ctx, src, nocookie = 'true') {
       if (targetURL.protocol) {
         srcURL.protocol = targetURL.protocol;
       }
-      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf || ''}&nocookie=${nocookie}`;
+      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(decodeURI(srcURL.format()))}&_csrf=${ctx.query._csrf || ctx.cookies.get('csrfToken') || ''}&nocookie=${nocookie}`;
     }
   }
   return src;
 }
 
-function handleNode(ctx, node, index = 0) {
+function handleNode(ctx, node, zIndex = 0) {
   if (!node) {
     return;
   }
@@ -111,8 +111,8 @@ function handleNode(ctx, node, index = 0) {
     const href = getAttribute(node.attrs, 'href');
     setAttribute(node.attrs, 'href', getProxyURL(ctx, href, ''));
   }
-  if (Array.isArray(node.childNodes) && index < 25) {
-    node.childNodes.map(childNode => handleNode(ctx, childNode, ++index));
+  if (Array.isArray(node.childNodes) && zIndex < 25) {
+    node.childNodes.map(childNode => handleNode(ctx, childNode, ++zIndex));
   }
 }
 
@@ -185,10 +185,6 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
       ctx.cookies.set('target', null);
     } else if (target) {
       if (targetRequest) {
-        const referer = url.parse(ctx.headers.referer || '');
-        if (referer.hostname !== ctx.hostname) {
-          return ctx.redirect('/');
-        }
         if (!ctx.query.nocookie) {
           const response = httpMocks.createResponse();
           await doProxy(ctx, ctx.req, response, {
@@ -204,17 +200,18 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
               break;
             }
           }
+          const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
           if (response.statusCode === 200 && detectHeader(response, 'content-type', 'text/html') &&
             (detectHeader(response, 'content-type', 'utf-8') || !detectHeader(response, 'content-type', 'charset'))) {
             if (detectHeader(response, 'content-encoding', 'gzip')) {
-              const html = zlib.gunzipSync(response._getBuffer());
+              const html = zlib.gunzipSync(buffer);
               const document = parse5.parse(html.toString());
               handleNode(ctx, document);
               ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
               return;
             }
           }
-          ctx.body = response._getBuffer();
+          ctx.body = buffer;
           return;
         }
       }
