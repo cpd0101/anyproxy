@@ -57,40 +57,39 @@ function detectHeader(res, key, value) {
 function isGoogleSearch(ctx, target) {
   const targetURL = url.parse(decodeURI(atob(target)));
   if (targetURL.host && targetURL.host.indexOf('google.com') > -1 && ctx.path === '/search') {
+    ctx.isGoogleSearch = true;
     return true;
   }
   return false;
 }
 
-function getProxyURL(ctx, src, nocookie = 'true') {
+function getProxyURL(ctx, src) {
   if (typeof src === 'string') {
     if (/^\/\//.test(src)) {
-      src = 'http:' + src;
-    }
-    const srcURL = url.parse(src);
-    if (srcURL.host && srcURL.host !== ctx.host) {
-      const target = decodeURI(atob(ctx.query.target || ctx.cookies.get('target') || ''));
+      const target = decodeURI(atob(ctx.query.target || ctx.cookies.get('target')));
       const targetURL = url.parse(target);
-      if (targetURL.protocol) {
-        srcURL.protocol = targetURL.protocol;
-      }
-      return `${ctx.protocol}://${ctx.host}/proxy?target=${btoa(encodeURI(srcURL.format()))}&_csrf=${ctx.csrf || ctx.query._csrf || ctx.cookies.get('csrfToken') || ''}&nocookie=${nocookie}`;
+      src = targetURL.protocol + src;
     }
+    if (/^\//.test(src)) {
+      return src;
+    }
+    return `/proxy?target=${btoa(encodeURI(src))}&_csrf=${ctx.csrf}&nocookie=true`;
   }
   return src;
 }
 
-function handleNode(ctx, node, zIndex = 0) {
+function handleNode(ctx, node, recurve) {
   if (!node) {
     return;
   }
-  if (toLowerCase(node.tagName) === 'meta') {
+  const tagName = toLowerCase(node.tagName);
+  if (tagName === 'meta') {
     const http_equiv = toLowerCase(getAttribute(node.attrs, 'http-equiv'));
     if (http_equiv === 'content-security-policy' || http_equiv === 'content-security-policy-report-only') {
       setAttribute(node.attrs, 'http-equiv', '');
     }
   }
-  if (toLowerCase(node.tagName) === 'link') {
+  if (tagName === 'link') {
     const href = getAttribute(node.attrs, 'href');
     const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
     const type = toLowerCase(getAttribute(node.attrs, 'type'));
@@ -101,25 +100,27 @@ function handleNode(ctx, node, zIndex = 0) {
       setAttribute(node.attrs, 'href', '/public/favicon.ico');
     }
   }
-  if (toLowerCase(node.tagName) === 'script') {
+  if (tagName === 'script') {
     const src = getAttribute(node.attrs, 'src');
     setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
   }
-  if (toLowerCase(node.tagName) === 'img') {
-    const src = getAttribute(node.attrs, 'src');
-    setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
+  if (Array.isArray(node.childNodes) && recurve) {
+    if (tagName === 'head' || tagName === 'body') {
+      recurve = false;
+    }
+    node.childNodes.map(childNode => handleNode(ctx, childNode, recurve));
   }
-  if (toLowerCase(node.tagName) === 'a') {
-    const href = getAttribute(node.attrs, 'href');
-    setAttribute(node.attrs, 'href', getProxyURL(ctx, href, ''));
-  }
-  if (Array.isArray(node.childNodes) && zIndex < 25) {
-    node.childNodes.map(childNode => handleNode(ctx, childNode, ++zIndex));
-  }
-  if (toLowerCase(node.tagName) === 'body') {
-    const fragment = parse5.parseFragment('<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>');
+  if (tagName === 'body') {
+    let fragmentStr =
+      '<script>if (typeof define === "function" && define.amd) { window.oldDefineAmd = define.amd; define.amd = undefined; }</script>' +
+      '<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/PGCnHSklorQGuDaFjAyc.js"></script>' +
+      '<script>if (window.oldDefineAmd) { define.amd = window.oldDefineAmd; }</script>' +
+      '<script src="/public/proxy.js"></script>' +
+      '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
+    const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
-    node.childNodes.push(fragment.childNodes[0]);
+    node.childNodes = node.childNodes.concat(fragment.childNodes);
   }
 }
 
@@ -151,7 +152,9 @@ async function doProxy(ctx, req, res, options) {
     }
     let hasSetCookie = false;
     if (isTargetRequest && !ctx.query.nocookie) {
-      ctx.cookies.set('target', target);
+      ctx.cookies.set('target', target, {
+        httpOnly: false,
+      });
       hasSetCookie = true;
     }
     const redirect = ctx.cookies.get('redirect');
@@ -189,9 +192,11 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     const targetRequest = ctx.path === proxyPath && ctx.query.target;
     const target = targetRequest || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
-      ctx.cookies.set('target', null);
+      ctx.cookies.set('target', null, {
+        httpOnly: false,
+      });
     } else if (target) {
-      if (targetRequest) {
+      if (targetRequest || isGoogleSearch(ctx, target)) {
         if (!ctx.query.nocookie) {
           const response = httpMocks.createResponse();
           await doProxy(ctx, ctx.req, response, {
@@ -213,7 +218,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
             if (detectHeader(response, 'content-encoding', 'gzip')) {
               const html = zlib.gunzipSync(buffer);
               const document = parse5.parse(html.toString());
-              handleNode(ctx, document);
+              handleNode(ctx, document, true);
               ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
               return;
             }
