@@ -38,7 +38,7 @@ function getAttribute(attrs, name) {
 
 function setAttribute(attrs, name, value) {
   if (Array.isArray(attrs)) {
-    attrs.map((attr) => {
+    attrs.map(attr => {
       if (attr && (toLowerCase(attr.name) === name)) {
         attr.value = value;
       }
@@ -58,9 +58,8 @@ function isGoogleSearch(ctx, target) {
   const targetURL = url.parse(decodeURI(atob(target)));
   if (targetURL.host && targetURL.host.indexOf('google.com') > -1 && ctx.path === '/search') {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 function getProxyURL(ctx, src, nocookie = 'true') {
@@ -128,7 +127,7 @@ async function doProxy(ctx, req, res, options) {
   const { whiteList, redirectRegex, target, isTargetRequest, isStream } = options;
   const targetURL = decodeURI(atob(target));
   const proxy = httpProxy.createProxyServer({});
-  proxy.on('proxyReq', function(proxyReq, req, res, options) {
+  proxy.on('proxyReq', function(proxyReq) {
     proxyReq.setHeader('referer', targetURL);
   });
   proxy.web(req, res, {
@@ -143,7 +142,7 @@ async function doProxy(ctx, req, res, options) {
     },
     proxyTimeout: 15 * 1000,
   });
-  proxy.on('proxyRes', function (proxyRes, req, res) {
+  proxy.on('proxyRes', function (proxyRes) {
     const content_length = proxyRes.headers['content-length'];
     if (!isStream && !(detectHeader(proxyRes, 'content-type', 'text') || detectHeader(proxyRes, 'content-type', 'image') ||
       detectHeader(proxyRes, 'content-type', 'javascript') || detectHeader(proxyRes, 'content-type', 'css') ||
@@ -157,7 +156,7 @@ async function doProxy(ctx, req, res, options) {
     }
     const redirect = ctx.cookies.get('redirect');
     if (redirectRegex.test(proxyRes.statusCode) && !redirect) {
-      const redirectURL = url.parse(proxyRes.headers['location'] || '');
+      const redirectURL = url.parse(proxyRes.headers.location || '');
       if (whiteList.includes(redirectURL.path)) {
         ctx.cookies.set('redirect', redirectURL.path);
         hasSetCookie = true;
@@ -175,10 +174,10 @@ async function doProxy(ctx, req, res, options) {
     delete proxyRes.headers['content-security-policy-report-only'];
   });
   await new Promise((resolve, reject) => {
-    proxy.on('error', function (err, req, res) {
+    proxy.on('error', function (err) {
       reject(err);
     });
-    proxy.on('end', function (req, res, proxyRes) {
+    proxy.on('end', function () {
       resolve();
     });
   });
