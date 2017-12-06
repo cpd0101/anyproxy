@@ -98,6 +98,9 @@ function handleNode(ctx, node, zIndex = 0) {
     if (rel === 'stylesheet' || type === 'text/css') {
       setAttribute(node.attrs, 'href', getProxyURL(ctx, href));
     }
+    if (rel === 'shortcut icon') {
+      setAttribute(node.attrs, 'href', '/public/favicon.ico');
+    }
   }
   if (toLowerCase(node.tagName) === 'script') {
     const src = getAttribute(node.attrs, 'src');
@@ -223,7 +226,11 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         isStream: true,
       });
     } else {
-      ctx.redirect('/');
+      if (/\.ico$/.test(ctx.path)) {
+        ctx.redirect('/public/favicon.ico');
+      } else {
+        ctx.redirect('/');
+      }
     }
   };
 };
