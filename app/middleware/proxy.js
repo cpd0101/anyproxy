@@ -111,7 +111,7 @@ function handleNode(ctx, node, recurve) {
     node.childNodes.map(childNode => handleNode(ctx, childNode, recurve));
   }
   if (tagName === 'body') {
-    let fragmentStr =
+    const fragmentStr =
       '<script>if (typeof define === "function" && define.amd) { window.oldDefineAmd = define.amd; define.amd = undefined; }</script>' +
       '<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/PGCnHSklorQGuDaFjAyc.js"></script>' +
