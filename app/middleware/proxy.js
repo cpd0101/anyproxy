@@ -117,6 +117,11 @@ function handleNode(ctx, node, zIndex = 0) {
   if (Array.isArray(node.childNodes) && zIndex < 25) {
     node.childNodes.map(childNode => handleNode(ctx, childNode, ++zIndex));
   }
+  if (toLowerCase(node.tagName) === 'body') {
+    const fragment = parse5.parseFragment('<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>');
+    node.childNodes = node.childNodes || [];
+    node.childNodes.push(fragment.childNodes[0]);
+  }
 }
 
 async function doProxy(ctx, req, res, options) {
