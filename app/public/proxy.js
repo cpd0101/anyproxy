@@ -37,4 +37,11 @@
       e.stopPropagation();
     };
   });
+
+  document.addEventListener('mousedown', function (e) {
+    if (e.target.tagName.toLocaleLowerCase() === 'a') {
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+    }
+  }, true);
 })();
