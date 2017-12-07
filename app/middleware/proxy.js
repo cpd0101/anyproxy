@@ -2,11 +2,11 @@
 
 const url = require('url');
 const zlib = require('zlib');
-const httpProxy = require('http-proxy');
+const httpProxy = require('http-proxy-self');
 const httpMocks = require('node-mocks-http-self');
 const parse5 = require('parse5');
 
-let web_o = require('http-proxy/lib/http-proxy/passes/web-outgoing');
+let web_o = require('http-proxy-self/lib/http-proxy/passes/web-outgoing');
 web_o = Object.keys(web_o).map(function(pass) {
   return web_o[pass];
 });
@@ -49,15 +49,6 @@ function setAttribute(attrs, name, value) {
 
 function detectHeader(res, key, value) {
   if (res.headers[key] && toLowerCase(res.headers[key]).indexOf(toLowerCase(value)) > -1) {
-    return true;
-  }
-  return false;
-}
-
-function isGoogleSearch(ctx, target) {
-  const targetURL = url.parse(decodeURI(atob(target)));
-  if (targetURL.host && targetURL.host.indexOf('google.com') > -1 && ctx.path === '/search') {
-    ctx.isGoogleSearch = true;
     return true;
   }
   return false;
@@ -124,8 +115,8 @@ function handleNode(ctx, node, recurve) {
   }
 }
 
-async function doProxy(ctx, req, res, opt) {
-  const { whiteList, redirectRegex, target, isTargetRequest, isStream } = opt;
+async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, target }) {
+  const isTargetRequest = ctx.path === proxyPath && ctx.query.target;
   const targetURL = decodeURI(atob(target));
   const options = {
     target: targetURL,
@@ -138,18 +129,15 @@ async function doProxy(ctx, req, res, opt) {
       '*': ctx.hostname,
     },
     proxyTimeout: 15 * 1000,
+    selfHandleResponse: true,
   };
+  let isHtml = false;
+  let response = ctx.res;
   const proxy = httpProxy.createProxyServer({});
-  proxy.on('proxyReq', function(proxyReq) {
+  proxy.on('proxyReq', function (proxyReq) {
     proxyReq.setHeader('referer', targetURL);
   });
   proxy.on('proxyRes', function (proxyRes) {
-    const content_length = proxyRes.headers['content-length'];
-    if (!isStream && !(detectHeader(proxyRes, 'content-type', 'text') || detectHeader(proxyRes, 'content-type', 'image') ||
-      detectHeader(proxyRes, 'content-type', 'javascript') || detectHeader(proxyRes, 'content-type', 'css') ||
-      (!detectHeader(proxyRes, 'transfer-encoding', 'chunked') && content_length && content_length <= 500 * 1024 * 8))) {
-      proxyRes.destroy(new Error('403 Forbidden'));
-    }
     let hasSetCookie = false;
     if (isTargetRequest && !ctx.query.nocookie) {
       ctx.cookies.set('target', target, {
@@ -175,13 +163,35 @@ async function doProxy(ctx, req, res, opt) {
     }
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
+    if (proxyRes.statusCode === 200 && detectHeader(proxyRes, 'content-type', 'text/html') &&
+      (detectHeader(proxyRes, 'content-type', 'utf-8') || !detectHeader(proxyRes, 'content-type', 'charset'))) {
+      isHtml = true;
+      response = httpMocks.createResponse();
+    }
+    for (let i = 0; i < web_o.length; i++) {
+      if (web_o[i](ctx.req, response, proxyRes, options)) { break; }
+    }
+    proxyRes.pipe(response);
   });
-  proxy.web(req, res, options);
+  proxy.web(ctx.req, ctx.res, options);
   await new Promise((resolve, reject) => {
     proxy.on('error', function (err) {
       reject(err);
     });
     proxy.on('end', function () {
+      if (isHtml) {
+        response.headers = response._headers;
+        for (let i = 0; i < web_o.length; i++) {
+          if (web_o[i](ctx.req, ctx.res, response, options)) {
+            break;
+          }
+        }
+        const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
+        const html = zlib.gunzipSync(buffer);
+        const document = parse5.parse(html.toString());
+        handleNode(ctx, document, true);
+        ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
+      }
       resolve();
     });
   });
@@ -190,50 +200,17 @@ async function doProxy(ctx, req, res, opt) {
 module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
   return async function proxy(ctx, next) {
     await next();
-    const targetRequest = ctx.path === proxyPath && ctx.query.target;
-    const target = targetRequest || ctx.cookies.get('target');
+    const target = (ctx.path === proxyPath && ctx.query.target) || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
       ctx.cookies.set('target', null, {
         httpOnly: false,
       });
     } else if (target) {
-      if (targetRequest || isGoogleSearch(ctx, target)) {
-        if (!ctx.query.nocookie) {
-          const response = httpMocks.createResponse();
-          await doProxy(ctx, ctx.req, response, {
-            whiteList,
-            redirectRegex,
-            target,
-            isTargetRequest: !!targetRequest,
-            isStream: false,
-          });
-          response.headers = response._headers;
-          for (let i = 0; i < web_o.length; i++) {
-            if (web_o[i](ctx.req, ctx.res, response, {})) {
-              break;
-            }
-          }
-          const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
-          if (response.statusCode === 200 && detectHeader(response, 'content-type', 'text/html') &&
-            (detectHeader(response, 'content-type', 'utf-8') || !detectHeader(response, 'content-type', 'charset'))) {
-            if (detectHeader(response, 'content-encoding', 'gzip')) {
-              const html = zlib.gunzipSync(buffer);
-              const document = parse5.parse(html.toString());
-              handleNode(ctx, document, true);
-              ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
-              return;
-            }
-          }
-          ctx.body = buffer;
-          return;
-        }
-      }
-      await doProxy(ctx, ctx.req, ctx.res, {
+      await doProxy(ctx, {
         whiteList,
+        proxyPath,
         redirectRegex,
         target,
-        isTargetRequest: !!targetRequest,
-        isStream: true,
       });
     } else {
       if (/\.ico$/.test(ctx.path)) {
