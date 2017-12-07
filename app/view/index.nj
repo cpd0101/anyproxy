@@ -33,14 +33,12 @@
       $('form').on('submit', function (e) {
         e.preventDefault();
         var target = btoa(encodeURI($('input[name="target"]').val()));
-        var _csrf = $('input[name="_csrf"]').val();
-        window.open('/proxy?target=' + target + '&_csrf=' + _csrf);
+        window.open('/proxy?target=' + target);
       });
       $('#google').on('click', function (e) {
         e.preventDefault();
         var target = btoa(encodeURI('https://www.google.com.hk'));
-        var _csrf = $('input[name="_csrf"]').val();
-        window.open('/proxy?target=' + target + '&_csrf=' + _csrf);
+        window.open('/proxy?target=' + target);
       });
       window.onunload = window.onbeforeunload = function (e) {
         Object.keys(Cookies.get()).map(function (key) {

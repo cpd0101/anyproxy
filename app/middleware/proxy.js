@@ -63,7 +63,7 @@ function getProxyURL(ctx, src) {
     if (/^\//.test(src)) {
       return src;
     }
-    return `/proxy?target=${btoa(encodeURI(src))}&_csrf=${ctx.csrf}&nocookie=true`;
+    return `/proxy?target=${btoa(encodeURI(src))}&nocookie=true`;
   }
   return src;
 }

@@ -15,6 +15,9 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1512282645887_7800';
 
+  // add your config here
+  config.middleware = [ 'proxy' ];
+
   config.view = {
     defaultViewEngine: 'nunjucks',
     mapping: {
@@ -36,7 +39,7 @@ module.exports = appInfo => {
       ignore,
     },
     csrf: {
-      ignore,
+      enable: false,
     },
   };
 
@@ -49,9 +52,6 @@ module.exports = appInfo => {
     proxyPath: '/proxy',
     redirectRegex: /^201|30(1|2|7|8)$/,
   };
-
-  // add your config here
-  config.middleware = [ 'proxy' ];
 
   return config;
 };

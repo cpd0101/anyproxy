@@ -18,7 +18,7 @@
       if (/^data\:/.test(src)) {
         return src;
       }
-      return '/proxy?target=' + btoa(encodeURI(src)) + '&_csrf=' + Cookies.get('csrfToken') + '&nocookie=' + nocookie;
+      return '/proxy?target=' + btoa(encodeURI(src)) + '&nocookie=' + nocookie;
     }
     return src;
   }
