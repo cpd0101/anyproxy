@@ -10,8 +10,8 @@
   </head>
   <body>
     <div style="position:relative;min-height:100%;overflow-x:hidden;">
-      <div class="text-center" style="padding:40px 0 0;"><h2>免费在线网页代理</h2></div>
-      <div class="text-center" style="margin:40px 0 0;">
+      <div class="text-center" style="margin:45px 0 30px;"><h2>免费在线网页代理</h2></div>
+      <div class="text-center">
         <img src="{{ logo }}" />
       </div>
       <form class="form-horizontal" style="padding:90px 0;">
