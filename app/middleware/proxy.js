@@ -57,8 +57,7 @@ function detectHeader(res, key, value) {
 function getProxyURL(ctx, src) {
   if (typeof src === 'string') {
     if (/^\/\//.test(src)) {
-      const target = decodeURI(atob(ctx.query.target || ctx.cookies.get('target')));
-      const targetURL = url.parse(target);
+      const targetURL = url.parse(decodeURI(atob(ctx.target)));
       src = targetURL.protocol + src;
     }
     if (/^\//.test(src)) {
@@ -115,9 +114,9 @@ function handleNode(ctx, node, recurve) {
   }
 }
 
-async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, target }) {
+async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const isTargetRequest = ctx.path === proxyPath && ctx.query.target;
-  const targetURL = decodeURI(atob(target));
+  const targetURL = decodeURI(atob(ctx.target));
   const options = {
     target: targetURL,
     changeOrigin: true,
@@ -140,7 +139,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, target }) {
   proxy.on('proxyRes', function (proxyRes) {
     let hasSetCookie = false;
     if (isTargetRequest && !ctx.query.nocookie) {
-      ctx.cookies.set('target', target, {
+      ctx.cookies.set('target', ctx.target, {
         httpOnly: false,
       });
       hasSetCookie = true;
@@ -200,17 +199,17 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, target }) {
 module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
   return async function proxy(ctx, next) {
     await next();
-    const target = (ctx.path === proxyPath && ctx.query.target) || ctx.cookies.get('target');
+    const referer = url.parse(ctx.headers.referer || '', true);
+    ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path) && !ctx.cookies.get('redirect')) {
       ctx.cookies.set('target', null, {
         httpOnly: false,
       });
-    } else if (target) {
+    } else if (ctx.target) {
       await doProxy(ctx, {
         whiteList,
         proxyPath,
         redirectRegex,
-        target,
       });
     } else {
       if (/\.ico$/.test(ctx.path)) {
