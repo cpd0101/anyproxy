@@ -124,14 +124,10 @@ function handleNode(ctx, node, recurve) {
   }
 }
 
-async function doProxy(ctx, req, res, options) {
-  const { whiteList, redirectRegex, target, isTargetRequest, isStream } = options;
+async function doProxy(ctx, req, res, opt) {
+  const { whiteList, redirectRegex, target, isTargetRequest, isStream } = opt;
   const targetURL = decodeURI(atob(target));
-  const proxy = httpProxy.createProxyServer({});
-  proxy.on('proxyReq', function(proxyReq) {
-    proxyReq.setHeader('referer', targetURL);
-  });
-  proxy.web(req, res, {
+  const options = {
     target: targetURL,
     changeOrigin: true,
     prependPath: isTargetRequest,
@@ -142,6 +138,10 @@ async function doProxy(ctx, req, res, options) {
       '*': ctx.hostname,
     },
     proxyTimeout: 15 * 1000,
+  };
+  const proxy = httpProxy.createProxyServer({});
+  proxy.on('proxyReq', function(proxyReq) {
+    proxyReq.setHeader('referer', targetURL);
   });
   proxy.on('proxyRes', function (proxyRes) {
     const content_length = proxyRes.headers['content-length'];
@@ -176,6 +176,7 @@ async function doProxy(ctx, req, res, options) {
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
   });
+  proxy.web(req, res, options);
   await new Promise((resolve, reject) => {
     proxy.on('error', function (err) {
       reject(err);
