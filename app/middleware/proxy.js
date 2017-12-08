@@ -135,6 +135,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const proxy = httpProxy.createProxyServer({});
   proxy.on('proxyReq', function (proxyReq) {
     proxyReq.setHeader('referer', targetURL);
+    proxyReq.setHeader('accept-encoding', 'gzip');
   });
   proxy.on('proxyRes', function (proxyRes) {
     let hasSetCookie = false;
