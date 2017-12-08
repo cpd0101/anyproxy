@@ -138,6 +138,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   };
   let isHtml = false;
   let response = ctx.res;
+  let timerId = null;
   const proxy = httpProxy.createProxyServer({});
   proxy.on('proxyReq', function (proxyReq) {
     proxyReq.setHeader('referer', targetURL);
@@ -178,13 +179,18 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       if (web_o[i](ctx.req, response, proxyRes, options)) { break; }
     }
     proxyRes.pipe(response);
+    timerId = setTimeout(() => {
+      proxyRes.destroy();
+    }, 30 * 1000)
   });
   proxy.web(ctx.req, ctx.res, options);
   await new Promise((resolve, reject) => {
     proxy.on('error', function (err) {
+      timerId && clearTimeout(timerId);
       reject(err);
     });
     proxy.on('end', function () {
+      timerId && clearTimeout(timerId);
       if (isHtml) {
         response.headers = response._headers;
         for (let i = 0; i < web_o.length; i++) {
