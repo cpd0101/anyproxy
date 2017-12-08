@@ -15,6 +15,7 @@ class HomeController extends Controller {
     await this.ctx.render('index.nj', {
       name,
       logo,
+      href,
       year: new Date().getFullYear(),
     });
   }
