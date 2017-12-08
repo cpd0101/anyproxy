@@ -18,6 +18,9 @@
       if (/^data\:/.test(src)) {
         return src;
       }
+      if (/^javascript\:/.test(src)) {
+        return src;
+      }
       return '/proxy?target=' + btoa(encodeURI(src)) + '&nocookie=' + nocookie;
     }
     return src;
