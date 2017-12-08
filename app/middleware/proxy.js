@@ -186,10 +186,14 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
           }
         }
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
-        const html = zlib.gunzipSync(buffer);
-        const document = parse5.parse(html.toString());
-        handleNode(ctx, document, true);
-        ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
+        if (detectHeader(response, 'content-encoding', 'gzip')) {
+          const html = zlib.gunzipSync(buffer);
+          const document = parse5.parse(html.toString());
+          handleNode(ctx, document, true);
+          ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
+        } else {
+          ctx.body = buffer;
+        }
       }
       resolve();
     });
