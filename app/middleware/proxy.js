@@ -135,7 +135,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const proxy = httpProxy.createProxyServer({});
   proxy.on('proxyReq', function (proxyReq) {
     proxyReq.setHeader('referer', targetURL);
-    proxyReq.setHeader('accept-encoding', 'gzip');
+    proxyReq.removeHeader('accept-encoding');
   });
   proxy.on('proxyRes', function (proxyRes) {
     let hasSetCookie = false;
@@ -193,7 +193,9 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
           handleNode(ctx, document, true);
           ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
         } else {
-          ctx.body = buffer;
+          const doc = parse5.parse(buffer.toString());
+          handleNode(ctx, doc, true);
+          ctx.body = parse5.serialize(doc);
         }
       }
       resolve();
