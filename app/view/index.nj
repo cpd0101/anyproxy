@@ -13,7 +13,7 @@
       <div class="text-center" style="margin:45px 0 30px;"><h2>免费在线网页代理</h2></div>
       <div class="text-center">
         <a target="_self" href="{{ href }}">
-          <img src="{{ logo }}" />
+          <img width="320" height="86" src="{{ logo }}" />
         </a>
       </div>
       <form class="form-horizontal" style="padding:90px 0;">
