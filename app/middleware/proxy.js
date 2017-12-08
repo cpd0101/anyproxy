@@ -63,6 +63,12 @@ function getProxyURL(ctx, src) {
     if (/^\//.test(src)) {
       return src;
     }
+    if (/^data\:/.test(src)) {
+      return src;
+    }
+    if (/^javascript\:/.test(src)) {
+      return src;
+    }
     return `/proxy?target=${btoa(encodeURI(src))}&nocookie=true`;
   }
   return src;
