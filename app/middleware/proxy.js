@@ -212,7 +212,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       isMocks = true;
     }
     let hasSetCookie = false;
-    if (isTargetRequest && toBoolean(ctx.query.nocookie)) {
+    if (isTargetRequest && !toBoolean(ctx.query.nocookie)) {
       ctx.cookies.set('target', ctx.target, {
         httpOnly: false,
       });
