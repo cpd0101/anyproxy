@@ -87,39 +87,17 @@ function getProxyURL(ctx, src, nocookie) {
   return src;
 }
 
-function setRedirectHostRewrite(req, res, proxyRes, options) {
-  if ((options.hostRewrite || options.autoRewrite || options.protocolRewrite)
-      && proxyRes.headers['location']
-      && options.redirectRegex.test(proxyRes.statusCode)) {
-    var target = url.parse(options.target);
-    var u = url.parse(proxyRes.headers['location'] || '');
+function setRedirectRewrite(req, res, proxyRes, options) {
+  var target = url.parse(options.target);
+  var u = url.parse(proxyRes.headers['location'] || '');
 
-    if (u.host && target.host !== u.host) {
-      if (options.protocolRewrite) {
-        u.protocol = options.protocolRewrite;
-      }
-      var src = u.format();
-      if (!toBoolean(options.nocookie)) {
-        options.ctx.cookies.set('target', btoa(encodeURI(src)), {
-          httpOnly: false,
-        });
-        var set_cookie = proxyRes.headers['set-cookie'] || [];
-        proxyRes.headers['set-cookie'] = set_cookie.concat(options.ctx.response.headers['set-cookie']);
-      }
-      proxyRes.headers['location'] = getProxyURL(options.ctx, src, options.nocookie);
-      return;
-    }
-
-    if (options.hostRewrite) {
-      u.host = options.hostRewrite;
-    } else if (options.autoRewrite) {
-      u.host = req.headers['host'];
-    }
+  if (u.host && target.host !== u.host) {
     if (options.protocolRewrite) {
       u.protocol = options.protocolRewrite;
     }
-
-    proxyRes.headers['location'] = u.format();
+    var src = u.format();
+    proxyRes.headers['location'] = getProxyURL(options.ctx, src, options.nocookie);
+    return;
   }
 }
 
@@ -255,7 +233,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       if (isMocks) {
         response.headers = response._headers;
         if (isRedirect) {
-          setRedirectHostRewrite(ctx.req, ctx.res, response, {
+          setRedirectRewrite(ctx.req, ctx.res, response, {
             ...options,
             redirectRegex,
             ctx,
