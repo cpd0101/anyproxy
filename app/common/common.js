@@ -12,4 +12,4 @@ module.exports = {
     }
     return { name, logo, href };
   },
-}
+};
