@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <link rel="shortcut icon" href="/public/favicon.ico" /> 
     <title>{{ name }} 免费在线网页代理</title>
-    <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/uKRBNtJsCYVZoeLyvCUS.css" />
+    <link rel="stylesheet" href="/public/bootstrap.min.css" />
   </head>
   <body>
     <div style="position:relative;min-height:100%;overflow-x:hidden;">
@@ -29,8 +29,8 @@
       </form>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;{{ name }}&nbsp;<a target="_blank" href="/feedback">意见反馈</a></div>
     </div>
-    <script src="https://gw.alipayobjects.com/os/rmsportal/zyRQSrCNLlgHigOaGnPp.js"></script>
-    <script src="https://gw.alipayobjects.com/os/rmsportal/PGCnHSklorQGuDaFjAyc.js"></script>
+    <script src="/public/jquery.min.js"></script>
+    <script src="/public/js-cookie.min.js"></script>
     <script>
       $('form').on('submit', function (e) {
         e.preventDefault();
@@ -49,7 +49,7 @@
         });
         return 'Are you sure to leave?';
       };
-      if (navigator.serviceWorker) {
+      if (navigator.serviceWorker && location.protocol === 'https:') {
         navigator.serviceWorker.register('/service-worker.js');
       }
     </script>

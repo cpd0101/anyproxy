@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <link rel="shortcut icon" href="/public/favicon.ico" /> 
     <title>{{ name }} 意见反馈</title>
-    <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/uKRBNtJsCYVZoeLyvCUS.css" />
+    <link rel="stylesheet" href="/public/bootstrap.min.css" />
   </head>
   <body>
     <div style="position:relative;min-height:100%;overflow-x:hidden;">
@@ -24,9 +24,9 @@
     </div>
     <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
     <script type="text/javascript">
-    window.changyan.api.config({
-    appid: 'cytm4uMJo',
-    conf: 'prod_2f5d9c62a31928067b5e069bcb9e23be'
+      window.changyan.api.config({
+      appid: 'cytm4uMJo',
+      conf: 'prod_2f5d9c62a31928067b5e069bcb9e23be'
     });
     </script>
     <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>

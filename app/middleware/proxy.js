@@ -107,11 +107,8 @@ function handleNode(ctx, node, recurve) {
     node.childNodes.map(childNode => handleNode(ctx, childNode, recurve));
   }
   if (tagName === 'body') {
-    const fragmentStr =
-      '<script>if (typeof define === "function" && define.amd) { window.oldDefineAmd = define.amd; define.amd = undefined; }</script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/zyRQSrCNLlgHigOaGnPp.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/PGCnHSklorQGuDaFjAyc.js"></script>' +
-      '<script>if (window.oldDefineAmd) { define.amd = window.oldDefineAmd; }</script>' +
+    const fragmentStr = '<script src="/public/jquery.min.js"></script>' +
+      '<script src="/public/js-cookie.min.js"></script>' +
       '<script src="/public/proxy.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
