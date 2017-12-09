@@ -170,7 +170,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const proxy = httpProxy.createProxyServer({});
   proxy.on('proxyReq', function (proxyReq) {
     proxyReq.setHeader('referer', targetURL);
-    proxyReq.removeHeader('accept-encoding');
+    proxyReq.setHeader('accept-encoding', 'gzip');
   });
   proxy.on('proxyRes', function (proxyRes) {
     if (proxyRes.statusCode === 200) {
@@ -256,7 +256,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
         } else {
           const doc = parse5.parse(buffer.toString());
           handleNode(ctx, doc, true);
-          ctx.body = parse5.serialize(doc);
+          ctx.body = Buffer.from(parse5.serialize(doc));
         }
       }
       resolve();
