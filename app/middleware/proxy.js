@@ -191,17 +191,16 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       });
       hasSetCookie = true;
     }
-    const redirect = ctx.cookies.get('redirect');
-    if (isRedirect && !redirect) {
+    if (ctx.cookies.get('redirect') === ctx.path) {
+      ctx.cookies.set('redirect', null);
+      hasSetCookie = true;
+    }
+    if (isRedirect) {
       const redirectURL = url.parse(proxyRes.headers['location'] || '');
-      if (whiteList.includes(redirectURL.pathname)) {
+      if (whiteList.includes(redirectURL.pathname) && redirectURL.hostname === ctx.hostname) {
         ctx.cookies.set('redirect', redirectURL.pathname);
         hasSetCookie = true;
       }
-    }
-    if (redirect === ctx.path) {
-      ctx.cookies.set('redirect', null);
-      hasSetCookie = true;
     }
     if (hasSetCookie) {
       const set_cookie = proxyRes.headers['set-cookie'] || [];
