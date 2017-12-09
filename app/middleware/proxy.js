@@ -154,7 +154,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     prependPath: isTargetRequest,
     ignorePath: isTargetRequest,
     autoRewrite: true,
-    protocolRewrite: 'https',
+    protocolRewrite: 'https:',
     cookieDomainRewrite: {
       '*': ctx.hostname,
     },
