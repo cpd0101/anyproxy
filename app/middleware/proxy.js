@@ -87,13 +87,16 @@ function getProxyURL(ctx, src, nocookie) {
   return src;
 }
 
-function setRedirectRewrite(ctx, proxyRes, options) {
+function rewriteLocation(ctx, proxyRes, options) {
   const target = url.parse(options.target);
   const u = url.parse(proxyRes.headers['location'] || '');
 
   if (u.host && target.host !== u.host && ctx.hostname !== u.hostname) {
     proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie);
+    return true;
   }
+
+  return false;
 }
 
 function handleNode(ctx, node, recurve) {
@@ -160,6 +163,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   let isHtml = false;
   let isUTF8 = false;
   let isMocks = false;
+  let isRewriteLocation = false;
   let response = ctx.res;
   let timerId = null;
   const proxy = httpProxy.createProxyServer({});
@@ -183,8 +187,8 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     if (redirectRegex.test(proxyRes.statusCode)) {
       isRedirect = true;
-      setRedirectRewrite(ctx, proxyRes, {
-        target: options.target,
+      isRewriteLocation = rewriteLocation(ctx, proxyRes, {
+        ...options,
         nocookie: !isHtml,
       });
     }
@@ -200,9 +204,10 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       hasSetCookie = true;
     }
     if (isRedirect) {
-      const redirectURL = url.parse(proxyRes.headers['location'] || '');
-      if (whiteList.includes(redirectURL.pathname) && (!redirectURL.hostname || redirectURL.hostname === ctx.hostname)) {
-        ctx.cookies.set('redirect', redirectURL.pathname);
+      const tURL = url.parse(targetURL);
+      const uURL = url.parse(proxyRes.headers['location'] || '');
+      if (!isRewriteLocation && whiteList.includes(uURL.pathname)) {
+        ctx.cookies.set('redirect', uURL.pathname);
         hasSetCookie = true;
       }
     }
