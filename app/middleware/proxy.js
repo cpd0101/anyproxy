@@ -91,7 +91,7 @@ function setRedirectRewrite(req, res, proxyRes, options) {
   var target = url.parse(options.target);
   var u = url.parse(proxyRes.headers['location'] || '');
 
-  if (u.host && target.host !== u.host) {
+  if (u.host && target.host !== u.host && options.ctx.hostname !== u.hostname) {
     if (options.protocolRewrite) {
       u.protocol = options.protocolRewrite;
     }
