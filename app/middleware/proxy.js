@@ -264,7 +264,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     await next();
     const referer = url.parse(ctx.headers.referer || '', true);
     ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
-    if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && target)) {
+    if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && ctx.target)) {
       ctx.cookies.set('target', null, {
         httpOnly: false,
       });
