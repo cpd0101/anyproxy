@@ -272,11 +272,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         redirectRegex,
       });
     } else {
-      if (/\.ico$/.test(ctx.path)) {
-        ctx.redirect('/public/favicon.ico');
-      } else {
-        ctx.redirect('/');
-      }
+      ctx.redirect('/');
     }
   };
 };
