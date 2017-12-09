@@ -87,17 +87,12 @@ function getProxyURL(ctx, src, nocookie) {
   return src;
 }
 
-function setRedirectRewrite(req, res, proxyRes, options) {
-  var target = url.parse(options.target);
-  var u = url.parse(proxyRes.headers['location'] || '');
+function setRedirectRewrite(ctx, proxyRes, options) {
+  const target = url.parse(options.target);
+  const u = url.parse(proxyRes.headers['location'] || '');
 
-  if (u.host && target.host !== u.host && options.ctx.hostname !== u.hostname) {
-    if (options.protocolRewrite) {
-      u.protocol = options.protocolRewrite;
-    }
-    var src = u.format();
-    proxyRes.headers['location'] = getProxyURL(options.ctx, src, options.nocookie);
-    return;
+  if (u.host && target.host !== u.host && ctx.hostname !== u.hostname) {
+    proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie);
   }
 }
 
@@ -232,19 +227,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       timerId && clearTimeout(timerId);
       if (isMocks) {
         response.headers = response._headers;
-        if (isRedirect) {
-          setRedirectRewrite(ctx.req, ctx.res, response, {
-            ...options,
-            redirectRegex,
-            ctx,
-            nocookie: !isHtml,
-          });
-        }
-        for (let i = 0; i < web_o.length; i++) {
-          if (web_o[i](ctx.req, ctx.res, response, options)) {
-            break;
-          }
-        }
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
         if (isRedirect) {
           ctx.body = buffer;
@@ -257,6 +239,17 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
           const doc = parse5.parse(buffer.toString());
           handleNode(ctx, doc, true);
           ctx.body = Buffer.from(parse5.serialize(doc));
+        }
+        if (isRedirect) {
+          setRedirectRewrite(ctx, response, {
+            target: options.target,
+            nocookie: !isHtml,
+          });
+        }
+        for (let i = 0; i < web_o.length; i++) {
+          if (web_o[i](ctx.req, ctx.res, response, options)) {
+            break;
+          }
         }
       }
       resolve();
