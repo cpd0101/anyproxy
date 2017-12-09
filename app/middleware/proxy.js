@@ -104,7 +104,7 @@ function setRedirectHostRewrite(req, res, proxyRes, options) {
           httpOnly: false,
         });
         var set_cookie = proxyRes.headers['set-cookie'] || [];
-        proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
+        proxyRes.headers['set-cookie'] = set_cookie.concat(options.ctx.response.headers['set-cookie']);
       }
       proxyRes.headers['location'] = getProxyURL(options.ctx, src, options.nocookie);
       return;
