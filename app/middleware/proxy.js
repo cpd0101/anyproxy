@@ -26,6 +26,19 @@ function toLowerCase(str) {
   return str;
 }
 
+function toBoolean(str) {
+  if (typeof str === 'boolean') {
+    return str;
+  }
+  if (str === 'false') {
+    return false;
+  } else if (str === 'true') {
+    return true;
+  } else {
+    return !!Number(str);
+  }
+}
+
 function getAttribute(attrs, name) {
   if (Array.isArray(attrs)) {
     for (let i = 0; i < attrs.length; i++) {
@@ -79,13 +92,21 @@ function setRedirectHostRewrite(req, res, proxyRes, options) {
       && proxyRes.headers['location']
       && options.redirectRegex.test(proxyRes.statusCode)) {
     var target = url.parse(options.target);
-    var u = url.parse(proxyRes.headers['location']);
+    var u = url.parse(proxyRes.headers['location'] || '');
 
     if (u.host && target.host !== u.host) {
       if (options.protocolRewrite) {
         u.protocol = options.protocolRewrite;
       }
-      proxyRes.headers['location'] = getProxyURL(options.ctx, u.format(), options.nocookie);
+      var src = u.format();
+      if (!toBoolean(options.nocookie)) {
+        ctx.cookies.set('target', btoa(encodeURI(src)), {
+          httpOnly: false,
+        });
+        var set_cookie = proxyRes.headers['set-cookie'] || [];
+        proxyRes.headers['set-cookie'] = set_cookie.concat(ctx.response.headers['set-cookie']);
+      }
+      proxyRes.headers['location'] = getProxyURL(options.ctx, src, options.nocookie);
       return;
     }
 
@@ -191,7 +212,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       isMocks = true;
     }
     let hasSetCookie = false;
-    if (isTargetRequest && ctx.query.nocookie !== 'true') {
+    if (isTargetRequest && toBoolean(ctx.query.nocookie)) {
       ctx.cookies.set('target', ctx.target, {
         httpOnly: false,
       });
@@ -199,7 +220,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     const redirect = ctx.cookies.get('redirect');
     if (isRedirect && !redirect) {
-      const redirectURL = url.parse(proxyRes.headers.location || '');
+      const redirectURL = url.parse(proxyRes.headers['location'] || '');
       if (whiteList.includes(redirectURL.path)) {
         ctx.cookies.set('redirect', redirectURL.path);
         hasSetCookie = true;
