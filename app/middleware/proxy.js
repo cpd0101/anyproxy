@@ -92,6 +92,9 @@ function rewriteLocation(ctx, proxyRes, options) {
   const u = url.parse(proxyRes.headers['location'] || '');
 
   if (u.host && target.host !== u.host && ctx.hostname !== u.hostname) {
+    if (options.protocolRewrite) {
+      u.protocol = options.protocolRewrite;
+    }
     proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie);
     return true;
   }
@@ -163,7 +166,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   let isHtml = false;
   let isUTF8 = false;
   let isMocks = false;
-  let isRewriteLocation = false;
   let response = ctx.res;
   let timerId = null;
   const proxy = httpProxy.createProxyServer({});
@@ -187,29 +189,29 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     if (redirectRegex.test(proxyRes.statusCode)) {
       isRedirect = true;
-      isRewriteLocation = rewriteLocation(ctx, proxyRes, {
+      rewriteLocation(ctx, proxyRes, {
         ...options,
         nocookie: !isHtml,
       });
     }
     let hasSetCookie = false;
+    if (isRedirect) {
+      const tURL = url.parse(targetURL);
+      const uURL = url.parse(proxyRes.headers['location'] || '');
+      if (whiteList.includes(uURL.pathname)) {
+        ctx.cookies.set('redirect', uURL.pathname);
+        hasSetCookie = true;
+      }
+    }
+    if (!hasSetCookie && ctx.cookies.get('redirect') === ctx.path) {
+      ctx.cookies.set('redirect', null);
+      hasSetCookie = true;
+    }
     if (isTargetRequest && !toBoolean(ctx.query.nocookie)) {
       ctx.cookies.set('target', ctx.target, {
         httpOnly: false,
       });
       hasSetCookie = true;
-    }
-    if (ctx.cookies.get('redirect') === ctx.path) {
-      ctx.cookies.set('redirect', null);
-      hasSetCookie = true;
-    }
-    if (isRedirect) {
-      const tURL = url.parse(targetURL);
-      const uURL = url.parse(proxyRes.headers['location'] || '');
-      if (!isRewriteLocation && whiteList.includes(uURL.pathname)) {
-        ctx.cookies.set('redirect', uURL.pathname);
-        hasSetCookie = true;
-      }
     }
     if (hasSetCookie) {
       const set_cookie = proxyRes.headers['set-cookie'] || [];
