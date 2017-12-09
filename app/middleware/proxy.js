@@ -91,10 +91,7 @@ function rewriteLocation(ctx, proxyRes, options) {
   const target = url.parse(options.target);
   const u = url.parse(proxyRes.headers['location'] || '');
 
-  if (u.host && target.host !== u.host && ctx.hostname !== u.hostname) {
-    if (options.protocolRewrite) {
-      u.protocol = options.protocolRewrite;
-    }
+  if ((u.host && target.host !== u.host && ctx.hostname !== u.hostname) || (u.protocol && target.protocol !== u.protocol)) {
     proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie);
     return true;
   }
