@@ -199,8 +199,8 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     const redirect = ctx.cookies.get('redirect');
     if (isRedirect && !redirect) {
       const redirectURL = url.parse(proxyRes.headers['location'] || '');
-      if (whiteList.includes(redirectURL.path)) {
-        ctx.cookies.set('redirect', redirectURL.path);
+      if (whiteList.includes(redirectURL.pathname)) {
+        ctx.cookies.set('redirect', redirectURL.pathname);
         hasSetCookie = true;
       }
     }
