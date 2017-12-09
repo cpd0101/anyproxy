@@ -100,7 +100,7 @@ function setRedirectHostRewrite(req, res, proxyRes, options) {
       }
       var src = u.format();
       if (!toBoolean(options.nocookie)) {
-        ctx.cookies.set('target', btoa(encodeURI(src)), {
+        options.ctx.cookies.set('target', btoa(encodeURI(src)), {
           httpOnly: false,
         });
         var set_cookie = proxyRes.headers['set-cookie'] || [];
