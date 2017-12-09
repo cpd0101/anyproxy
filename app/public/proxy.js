@@ -35,7 +35,7 @@
 
   $('a').each(function () {
     var href = $(this).attr('href');
-    $(this).attr('href', getProxyURL(href, ''));
+    $(this).attr('href', getProxyURL(href, false));
     $(this).attr('onmousedown', '');
     this.onmousedown = function (e) {
       e.stopImmediatePropagation();

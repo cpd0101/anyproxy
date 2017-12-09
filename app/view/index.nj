@@ -53,6 +53,6 @@
         navigator.serviceWorker.register('/service-worker.js');
       }
     </script>
-    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+    <script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
   </body>
 </html>

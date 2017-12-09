@@ -54,7 +54,7 @@ function detectHeader(res, key, value) {
   return false;
 }
 
-function getProxyURL(ctx, src) {
+function getProxyURL(ctx, src, nocookie) {
   if (typeof src === 'string') {
     if (/^\/\//.test(src)) {
       const targetURL = url.parse(decodeURI(atob(ctx.target)));
@@ -69,9 +69,37 @@ function getProxyURL(ctx, src) {
     if (/^javascript\:/.test(src)) {
       return src;
     }
-    return `/proxy?target=${btoa(encodeURI(src))}&nocookie=true`;
+    return `/proxy?target=${btoa(encodeURI(src))}&nocookie=${nocookie}`;
   }
   return src;
+}
+
+function setRedirectHostRewrite(req, res, proxyRes, options) {
+  if ((options.hostRewrite || options.autoRewrite || options.protocolRewrite)
+      && proxyRes.headers['location']
+      && options.redirectRegex.test(proxyRes.statusCode)) {
+    var target = url.parse(options.target);
+    var u = url.parse(proxyRes.headers['location']);
+
+    if (u.host && target.host !== u.host) {
+      if (options.protocolRewrite) {
+        u.protocol = options.protocolRewrite;
+      }
+      proxyRes.headers['location'] = getProxyURL(options.ctx, u.format(), options.nocookie);
+      return;
+    }
+
+    if (options.hostRewrite) {
+      u.host = options.hostRewrite;
+    } else if (options.autoRewrite) {
+      u.host = req.headers['host'];
+    }
+    if (options.protocolRewrite) {
+      u.protocol = options.protocolRewrite;
+    }
+
+    proxyRes.headers['location'] = u.format();
+  }
 }
 
 function handleNode(ctx, node, recurve) {
@@ -126,14 +154,18 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     prependPath: isTargetRequest,
     ignorePath: isTargetRequest,
     autoRewrite: true,
-    protocolRewrite: 'http',
+    protocolRewrite: ctx.protocol,
     cookieDomainRewrite: {
       '*': ctx.hostname,
     },
     proxyTimeout: 15 * 1000,
     selfHandleResponse: true,
   };
+  let isOk = false;
+  let isRedirect= false;
   let isHtml = false;
+  let isUTF8 = false;
+  let isMocks = false;
   let response = ctx.res;
   let timerId = null;
   const proxy = httpProxy.createProxyServer({});
@@ -142,15 +174,31 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     proxyReq.removeHeader('accept-encoding');
   });
   proxy.on('proxyRes', function (proxyRes) {
+    if (proxyRes.statusCode === 200) {
+      isOk = true;
+    }
+    if (redirectRegex.test(proxyRes.statusCode)) {
+      isRedirect = true;
+    }
+    if (detectHeader(proxyRes, 'content-type', 'utf-8') || !detectHeader(proxyRes, 'content-type', 'charset')) {
+      isUTF8 = true;
+    }
+    if (detectHeader(proxyRes, 'content-type', 'text/html')) {
+      isHtml = true;
+    }
+    if ((isOk && isHtml && isUTF8) || isRedirect) {
+      response = httpMocks.createResponse();
+      isMocks = true;
+    }
     let hasSetCookie = false;
-    if (isTargetRequest && !ctx.query.nocookie) {
+    if (isTargetRequest && ctx.query.nocookie !== 'true') {
       ctx.cookies.set('target', ctx.target, {
         httpOnly: false,
       });
       hasSetCookie = true;
     }
     const redirect = ctx.cookies.get('redirect');
-    if (redirectRegex.test(proxyRes.statusCode) && !redirect) {
+    if (isRedirect && !redirect) {
       const redirectURL = url.parse(proxyRes.headers.location || '');
       if (whiteList.includes(redirectURL.path)) {
         ctx.cookies.set('redirect', redirectURL.path);
@@ -167,11 +215,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
-    if (proxyRes.statusCode === 200 && detectHeader(proxyRes, 'content-type', 'text/html') &&
-      (detectHeader(proxyRes, 'content-type', 'utf-8') || !detectHeader(proxyRes, 'content-type', 'charset'))) {
-      isHtml = true;
-      response = httpMocks.createResponse();
-    }
     for (let i = 0; i < web_o.length; i++) {
       if (web_o[i](ctx.req, response, proxyRes, options)) { break; }
     }
@@ -188,15 +231,25 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     });
     proxy.on('end', function () {
       timerId && clearTimeout(timerId);
-      if (isHtml) {
+      if (isMocks) {
         response.headers = response._headers;
+        if (isRedirect) {
+          setRedirectHostRewrite(ctx.req, ctx.res, response, {
+            ...options,
+            redirectRegex,
+            ctx,
+            nocookie: !isHtml,
+          });
+        }
         for (let i = 0; i < web_o.length; i++) {
           if (web_o[i](ctx.req, ctx.res, response, options)) {
             break;
           }
         }
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
-        if (detectHeader(response, 'content-encoding', 'gzip')) {
+        if (isRedirect) {
+          ctx.body = buffer;
+        } else if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
           const document = parse5.parse(html.toString());
           handleNode(ctx, document, true);

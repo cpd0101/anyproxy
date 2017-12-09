@@ -22,13 +22,13 @@
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;<a target="_blank" href="/">{{ name }}</a></div>
     </div>
-    <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+    <script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js" ></script>
     <script type="text/javascript">
       window.changyan.api.config({
       appid: 'cytm4uMJo',
       conf: 'prod_2f5d9c62a31928067b5e069bcb9e23be'
     });
     </script>
-    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+    <script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
   </body>
 </html>
