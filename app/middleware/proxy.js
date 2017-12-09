@@ -171,18 +171,22 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     if (proxyRes.statusCode === 200) {
       isOk = true;
     }
-    if (redirectRegex.test(proxyRes.statusCode)) {
-      isRedirect = true;
-    }
     if (detectHeader(proxyRes, 'content-type', 'utf-8') || !detectHeader(proxyRes, 'content-type', 'charset')) {
       isUTF8 = true;
     }
     if (detectHeader(proxyRes, 'content-type', 'text/html')) {
       isHtml = true;
     }
-    if ((isOk && isHtml && isUTF8) || isRedirect) {
+    if (isOk && isHtml && isUTF8) {
       response = httpMocks.createResponse();
       isMocks = true;
+    }
+    if (redirectRegex.test(proxyRes.statusCode)) {
+      isRedirect = true;
+      setRedirectRewrite(ctx, proxyRes, {
+        target: options.target,
+        nocookie: !isHtml,
+      });
     }
     let hasSetCookie = false;
     if (isTargetRequest && !toBoolean(ctx.query.nocookie)) {
@@ -197,7 +201,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     if (isRedirect) {
       const redirectURL = url.parse(proxyRes.headers['location'] || '');
-      if (whiteList.includes(redirectURL.pathname) && redirectURL.hostname === ctx.hostname) {
+      if (whiteList.includes(redirectURL.pathname) && (!redirectURL.hostname || redirectURL.hostname === ctx.hostname)) {
         ctx.cookies.set('redirect', redirectURL.pathname);
         hasSetCookie = true;
       }
@@ -227,9 +231,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       if (isMocks) {
         response.headers = response._headers;
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
-        if (isRedirect) {
-          ctx.body = buffer;
-        } else if (detectHeader(response, 'content-encoding', 'gzip')) {
+        if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
           const document = parse5.parse(html.toString());
           handleNode(ctx, document, true);
@@ -238,12 +240,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
           const doc = parse5.parse(buffer.toString());
           handleNode(ctx, doc, true);
           ctx.body = Buffer.from(parse5.serialize(doc));
-        }
-        if (isRedirect) {
-          setRedirectRewrite(ctx, response, {
-            target: options.target,
-            nocookie: !isHtml,
-          });
         }
         for (let i = 0; i < web_o.length; i++) {
           if (web_o[i](ctx.req, ctx.res, response, options)) {
