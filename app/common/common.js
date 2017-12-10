@@ -5,7 +5,7 @@ module.exports = {
     let name = 'AnyProxy';
     let logo = '/public/anyproxy.png';
     let href = 'https://www.anyproxy.cc/';
-    if (/proxyit.cc$/.tets(ctx.hostname)) {
+    if (/proxyit\.(cc|cn)$/.test(ctx.hostname)) {
       name = 'ProxyIt';
       logo = '/public/proxyit.png';
       href = 'https://www.proxyit.cc/';
