@@ -5,7 +5,7 @@
   function getProxyURL(src, nocookie) {
     if (typeof src === 'string') {
       if (/^\/\//.test(src)) {
-        var isHttps = /^https\:\/\//.test(target);
+        var isHttps = /^https\:/.test(target);
         if (isHttps) {
           src = 'https:' + src;
         } else {

@@ -135,7 +135,7 @@ function handleNode(ctx, node, recurve) {
     const fragmentStr = '<script src="/public/jquery.min.js"></script>' +
       '<script src="/public/js-cookie.min.js"></script>' +
       '<script src="/public/proxy.js"></script>' +
-      '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
+      '<script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = node.childNodes.concat(fragment.childNodes);
