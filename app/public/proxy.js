@@ -30,12 +30,12 @@
     return src;
   }
 
-  if (!navigator.serviceWorker) {
-    $('img').each(function () {
-      var src = $(this).attr('src');
+  $('img').each(function () {
+    var src = $(this).attr('src');
+    if (!(navigator.serviceWorker && !/^http\:/.test(src))) {
       $(this).attr('src', getProxyURL(src, true));
-    });
-  }
+    }
+  });
 
   $('a').each(function () {
     var href = $(this).attr('href');
