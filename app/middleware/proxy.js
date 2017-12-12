@@ -148,9 +148,9 @@ function handleNode(ctx, node, recurve) {
 
 async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const isTargetRequest = ctx.path === proxyPath && ctx.query.target;
-  const targetURL = decodeURI(atob(ctx.target));
+  const target = decodeURI(atob(ctx.target));
   const options = {
-    target: targetURL,
+    target,
     changeOrigin: true,
     prependPath: isTargetRequest,
     ignorePath: isTargetRequest,
@@ -171,7 +171,13 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   let timerId = null;
   const proxy = httpProxy.createProxyServer({});
   proxy.on('proxyReq', function (proxyReq) {
-    proxyReq.setHeader('referer', targetURL);
+    const referer = url.parse(ctx.headers.referer || '', true);
+    const realReferer = decodeURI(atob(referer.query.target || ctx.cookies.get('target') || ''));
+    if (realReferer) {
+      proxyReq.setHeader('referer', realReferer);
+    } else {
+      proxyReq.removeHeader('referer');
+    }
     proxyReq.setHeader('accept-encoding', 'gzip');
   });
   proxy.on('proxyRes', function (proxyRes) {
@@ -197,7 +203,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     let hasSetCookie = false;
     if (isRedirect) {
-      const tURL = url.parse(targetURL);
       const uURL = url.parse(proxyRes.headers['location'] || '');
       if (whiteList.includes(uURL.pathname)) {
         ctx.cookies.set('redirect', uURL.pathname);
