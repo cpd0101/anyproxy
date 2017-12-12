@@ -22,6 +22,7 @@
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;<a target="_blank" href="/">{{ name }}</a></div>
     </div>
+    <script src="/public/jquery.min.js"></script>
     <script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
     <script>
     (function() {
@@ -32,5 +33,22 @@
     })();
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <script>
+      var intervalId = setInterval(function () {
+        var iframe = $('#disqus_thread').children('iframe');
+        if (iframe.length) {
+          clearInterval(intervalId);
+          var href = iframe.attr('src');
+          var index = href.lastIndexOf('#');
+          if (index === -1) {
+            index = href.length;
+          }
+          var src = href.slice(0, index);
+          var hash = href.slice(index);
+          var html = $('#disqus_thread').html();
+          $('#disqus_thread').html(html.replace(/src="[^"]*"/i, 'src="' + location.origin + '/proxy?target=' + btoa(encodeURI(src)) + hash + '"'));
+        }
+      }, 500);
+    </script>
   </body>
 </html>
