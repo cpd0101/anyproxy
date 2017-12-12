@@ -37,7 +37,7 @@
       $('#disqus_thread').delegate('a', 'mousedown', function (e) {
         if ($(this).text() === 'Reload') {
           var iframe = $('#disqus_thread').children('iframe');
-          var href = iframe.attr('src');
+          var href = iframe.get(0).src;
           var index = href.lastIndexOf('#');
           if (index === -1) {
             index = href.length;
