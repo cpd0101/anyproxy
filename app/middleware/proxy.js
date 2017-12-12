@@ -225,13 +225,18 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
+    if (!isOk && !isRedirect) {
+      proxyRes.destroy();
+      return;
+    }
+    timerId = setTimeout(() => {
+      proxyRes.destroy();
+      return;
+    }, 30 * 1000);
     for (let i = 0; i < web_o.length; i++) {
       if (web_o[i](ctx.req, response, proxyRes, options)) { break; }
     }
     proxyRes.pipe(response);
-    timerId = setTimeout(() => {
-      proxyRes.destroy();
-    }, 30 * 1000)
   });
   proxy.web(ctx.req, ctx.res, options);
   await new Promise((resolve, reject) => {
@@ -275,11 +280,15 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         httpOnly: false,
       });
     } else if (ctx.target) {
-      await doProxy(ctx, {
-        whiteList,
-        proxyPath,
-        redirectRegex,
-      });
+      try {
+        await doProxy(ctx, {
+          whiteList,
+          proxyPath,
+          redirectRegex,
+        });
+      } catch (e) { 
+        // todo 
+      }
     } else {
       ctx.redirect('/');
     }
