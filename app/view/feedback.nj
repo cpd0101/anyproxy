@@ -45,7 +45,8 @@
           }
           var src = href.slice(0, index);
           var hash = href.slice(index);
-          iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + hash);
+          // iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + hash);
+          location.href = '/proxy?target=' + btoa(encodeURI(src)) + hash;
         }
       }, 500);
     </script>
