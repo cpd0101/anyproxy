@@ -37,7 +37,7 @@
       var intervalId = setInterval(function () {
         var iframe = $('#disqus_thread').children('iframe');
         if (iframe.length) {
-          clearInterval(intervalId);
+          intervalId && clearInterval(intervalId);
           var href = iframe.attr('src');
           var index = href.lastIndexOf('#');
           if (index === -1) {
