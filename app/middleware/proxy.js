@@ -231,7 +231,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     }
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
-    if (!isOk && !isRedirect) {
+    if (/^(4|5)\d\d$/.test(proxyRes.statusCode)) {
       proxyRes.destroy(new Error(`${proxyRes.statusCode} ${proxyRes.statusMessage}`));
       return;
     }
