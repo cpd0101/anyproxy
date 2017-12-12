@@ -287,15 +287,11 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         httpOnly: false,
       });
     } else if (ctx.target) {
-      try {
-        await doProxy(ctx, {
-          whiteList,
-          proxyPath,
-          redirectRegex,
-        });
-      } catch (e) { 
-        // todo 
-      }
+      await doProxy(ctx, {
+        whiteList,
+        proxyPath,
+        redirectRegex,
+      });
     } else {
       ctx.redirect('/');
     }

@@ -34,10 +34,9 @@
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <script>
-      var intervalId = setInterval(function () {
-        var iframe = $('#disqus_thread').children('iframe');
-        if (iframe.length) {
-          intervalId && clearInterval(intervalId);
+      $('#disqus_thread').delegate('a', 'mousedown', function (e) {
+        if ($(this).text() === 'Reload') {
+          var iframe = $('#disqus_thread').children('iframe');
           var href = iframe.attr('src');
           var index = href.lastIndexOf('#');
           if (index === -1) {
@@ -45,10 +44,9 @@
           }
           var src = href.slice(0, index);
           var hash = href.slice(index);
-          // iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + hash);
-          location.href = '/proxy?target=' + btoa(encodeURI(src)) + hash;
+          window.open('/proxy?target=' + btoa(encodeURI(src)) + hash);
         }
-      }, 500);
+      });
     </script>
   </body>
 </html>
