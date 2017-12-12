@@ -1,5 +1,6 @@
 'use strict';
 
+const stream = require('stream');
 const url = require('url');
 const zlib = require('zlib');
 const httpProxy = require('http-proxy-self');
@@ -149,6 +150,8 @@ function handleNode(ctx, node, recurve) {
 async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
   const isTargetRequest = ctx.path === proxyPath && ctx.query.target;
   const target = decodeURI(atob(ctx.target));
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(Buffer.from(ctx.request.rawBody || ''));
   const options = {
     target,
     changeOrigin: true,
@@ -161,6 +164,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     },
     proxyTimeout: 15 * 1000,
     selfHandleResponse: true,
+    buffer: ctx.request.rawBody ? bufferStream : null,
   };
   let isOk = false;
   let isRedirect= false;
@@ -178,6 +182,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     } else {
       proxyReq.removeHeader('referer');
     }
+    proxyReq.removeHeader('origin');
     proxyReq.setHeader('accept-encoding', 'gzip');
     proxyReq.setHeader('accept-charset', 'utf-8');
   });
