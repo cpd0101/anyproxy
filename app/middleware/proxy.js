@@ -227,11 +227,11 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
     if (!isOk && !isRedirect) {
-      proxyRes.destroy();
+      proxyRes.destroy(new Error(`${proxyRes.statusCode} ${proxyRes.statusMessage}`));
       return;
     }
     timerId = setTimeout(() => {
-      proxyRes.destroy();
+      proxyRes.destroy(new Error('408 Request Timeout'));
       return;
     }, 30 * 1000);
     for (let i = 0; i < web_o.length; i++) {
