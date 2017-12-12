@@ -249,6 +249,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       timerId && clearTimeout(timerId);
       if (isMocks) {
         response.headers = response._headers;
+        delete response.headers['content-length'];
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
         if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
