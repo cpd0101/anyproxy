@@ -82,6 +82,10 @@ function getProxyURL(ctx, src, nocookie) {
     if (/^javascript\:/.test(src)) {
       return src;
     }
+    const reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu)\.(cc|cn|com)/i;
+    if (reg.test(src)) {
+      return src;
+    }
     return `/proxy?target=${btoa(encodeURI(src))}&nocookie=${nocookie}`;
   }
   return src;
@@ -115,7 +119,7 @@ function handleNode(ctx, node, recurve) {
     const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
     const type = toLowerCase(getAttribute(node.attrs, 'type'));
     if (rel === 'stylesheet' || type === 'text/css') {
-      setAttribute(node.attrs, 'href', getProxyURL(ctx, href));
+      setAttribute(node.attrs, 'href', getProxyURL(ctx, href, false));
     }
     if (rel === 'shortcut icon') {
       setAttribute(node.attrs, 'href', '/public/favicon.ico');
@@ -123,7 +127,7 @@ function handleNode(ctx, node, recurve) {
   }
   if (tagName === 'script') {
     const src = getAttribute(node.attrs, 'src');
-    setAttribute(node.attrs, 'src', getProxyURL(ctx, src));
+    setAttribute(node.attrs, 'src', getProxyURL(ctx, src, false));
   }
   if (Array.isArray(node.childNodes) && recurve) {
     if (tagName === 'head' || tagName === 'body') {

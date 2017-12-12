@@ -21,6 +21,10 @@
       if (/^javascript\:/.test(src)) {
         return src;
       }
+      var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu)\.(cc|cn|com)/i;
+      if (reg.test(src)) {
+        return src;
+      }
       return '/proxy?target=' + btoa(encodeURI(src)) + '&nocookie=' + nocookie;
     }
     return src;
