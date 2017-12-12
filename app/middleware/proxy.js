@@ -179,6 +179,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       proxyReq.removeHeader('referer');
     }
     proxyReq.setHeader('accept-encoding', 'gzip');
+    proxyReq.setHeader('accept-charset', 'utf-8');
   });
   proxy.on('proxyRes', function (proxyRes) {
     if (proxyRes.statusCode === 200) {
