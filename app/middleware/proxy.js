@@ -119,7 +119,7 @@ function handleNode(ctx, node, recurve) {
     const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
     const type = toLowerCase(getAttribute(node.attrs, 'type'));
     if (rel === 'stylesheet' || type === 'text/css') {
-      setAttribute(node.attrs, 'href', getProxyURL(ctx, href, false));
+      setAttribute(node.attrs, 'href', getProxyURL(ctx, href, true));
     }
     if (rel === 'shortcut icon') {
       setAttribute(node.attrs, 'href', '/public/favicon.ico');
@@ -127,7 +127,7 @@ function handleNode(ctx, node, recurve) {
   }
   if (tagName === 'script') {
     const src = getAttribute(node.attrs, 'src');
-    setAttribute(node.attrs, 'src', getProxyURL(ctx, src, false));
+    setAttribute(node.attrs, 'src', getProxyURL(ctx, src, true));
   }
   if (Array.isArray(node.childNodes) && recurve) {
     if (tagName === 'head' || tagName === 'body') {
