@@ -9,13 +9,14 @@ this.addEventListener('fetch', function (event) {
       headers: request.headers,
       referrer: request.referrer
     };
-    if (request.method.toUpperCase() === 'POST') {
+    var method = request.method.toUpperCase();
+    if (method === 'GET' || method === 'HEAD') {
+      event.respondWith(fetch(new Request(targetURL, initOptions)));
+    } else {
       event.respondWith(request.arrayBuffer().then(function (body) {
         initOptions.body = body;
         return fetch(new Request(targetURL, initOptions));
-      }))
-    } else {
-      event.respondWith(fetch(new Request(targetURL, initOptions)));
+      }));
     }
   }
 });
