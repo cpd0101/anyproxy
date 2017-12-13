@@ -35,9 +35,8 @@ function toBoolean(str) {
     return false;
   } else if (str === 'true') {
     return true;
-  } else {
-    return !!Number(str);
   }
+  return !!Number(str);
 }
 
 function getAttribute(attrs, name) {
@@ -174,7 +173,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     buffer: ctx.request.rawBody ? bufferStream : null,
   };
   let isOk = false;
-  let isRedirect= false;
+  let isRedirect = false;
   let isHtml = false;
   let isUTF8 = false;
   let isMocks = false;

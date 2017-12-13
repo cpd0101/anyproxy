@@ -6,6 +6,7 @@ const fs = require('fs');
 
 class SsserverController extends Controller {
   async query() {
+    const ctx = this.ctx;
     const content = await new Promise((resolve, reject) => {
       fs.readFile(path.join(process.cwd(), 'app', 'config', 'ss-config.json'), (err, data) => {
         if (err) {
