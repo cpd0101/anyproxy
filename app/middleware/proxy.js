@@ -146,7 +146,7 @@ function handleNode(ctx, node, recurve) {
     node.childNodes = node.childNodes.concat(fragment.childNodes);
   }
   if (toBoolean(ctx.query.noframe) && tagName === 'head') {
-    const fragmentStr = '<script>window.__defineGetter__("self", function() { return window.top; })</script>';
+    const fragmentStr = '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = fragment.childNodes.concat(node.childNodes);
