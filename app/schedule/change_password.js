@@ -5,7 +5,7 @@ const fs = require('fs');
 
 module.exports = {
   schedule: {
-    cron: '* 0 4 * * *',
+    cron: '0 4 * * *',
     type: 'worker',
   },
   async task(ctx) {
