@@ -27,11 +27,15 @@
           <button id="google" class="btn btn-default">Go To Google</button>
         </div>
       </form>
+      <div class="text-center" style="padding:0 0 60px;">
+        <a id="ss-account" style="color:#d43f3a;text-decoration:underline;">免费获取 Shadowsocks 账号配置</a>
+      </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;{{ name }}&nbsp;<a target="_blank" href="/feedback">意见反馈</a></div>
     </div>
     <script src="/public/jquery.min.js"></script>
     <script src="/public/js-cookie.min.js"></script>
     <script>
+      var _hmt = _hmt || [];
       $('form').on('submit', function (e) {
         e.preventDefault();
         var target = btoa(encodeURI($('input[name="target"]').val()));
@@ -41,6 +45,16 @@
         e.preventDefault();
         var target = btoa(encodeURI('https://www.google.com.hk'));
         window.open('/proxy?target=' + target);
+      });
+      $('#ss-account').on('click', function (e) {
+        var _csrf = Cookies.get('csrfToken');
+        _hmt.push(['_trackEvent', 'ss', 'acquire-click']); 
+        $.post('/ss/queryConfig', {
+          _csrf: _csrf
+        }, function (data) {
+          alert(JSON.stringify(data));
+          _hmt.push(['_trackEvent', 'ss', 'acquire-success']); 
+        }, 'json');
       });
       window.onunload = window.onbeforeunload = function (e) {
         Object.keys(Cookies.get()).map(function (key) {

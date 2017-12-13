@@ -1,12 +1,22 @@
 'use strict';
+const url = require('url');
 
 const WHITE_LIST = [
   '/',
   '/feedback',
+  '/ss/queryConfig',
 ];
 
+const PROXY_PATH = '/proxy';
+
+const REDIRECT_REGEX = /^201|30(1|2|7|8)$/;
+
 function ignore(ctx) {
-  return !WHITE_LIST.includes(ctx.path) || ctx.cookies.get('redirect');
+  if (!ctx.target) {
+    const referer = url.parse(ctx.headers.referer || '', true);
+    ctx.target = (ctx.path === PROXY_PATH && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
+  }
+  return !WHITE_LIST.includes(ctx.path) || (ctx.cookies.get('redirect') && ctx.target);
 }
 
 module.exports = appInfo => {
@@ -39,7 +49,7 @@ module.exports = appInfo => {
       ignore,
     },
     csrf: {
-      enable: false,
+      ignore,
     },
   };
 
@@ -49,8 +59,8 @@ module.exports = appInfo => {
 
   config.proxy = {
     whiteList: WHITE_LIST,
-    proxyPath: '/proxy',
-    redirectRegex: /^201|30(1|2|7|8)$/,
+    proxyPath: PROXY_PATH,
+    redirectRegex: REDIRECT_REGEX,
   };
 
   return config;

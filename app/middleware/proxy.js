@@ -287,12 +287,16 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
 module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
   return async function proxy(ctx, next) {
     await next();
-    const referer = url.parse(ctx.headers.referer || '', true);
-    ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
+    if (!ctx.target) {
+      const referer = url.parse(ctx.headers.referer || '', true);
+      ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
+    }
     if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && ctx.target)) {
-      ctx.cookies.set('target', null, {
-        httpOnly: false,
-      });
+      if (ctx.method === 'GET') {
+        ctx.cookies.set('target', null, {
+          httpOnly: false,
+        });
+      }
     } else if (ctx.target) {
       try {
         await doProxy(ctx, {
