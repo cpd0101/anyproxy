@@ -300,10 +300,10 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
           proxyPath,
           redirectRegex,
         });
-      } catch (e) {
-        ctx.body = `<h3>${e.message}</h3>`;
+      } catch (err) {
+        ctx.body = `<h3>${err.message}</h3>`;
         ctx.status = 400;
-        ctx.logger.error(e);
+        ctx.logger.error(err);
       }
     } else {
       ctx.redirect('/');
