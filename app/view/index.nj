@@ -28,7 +28,7 @@
         </div>
       </form>
       <div class="text-center" style="padding:0 0 60px;">
-        <a id="ss-account" style="color:#d43f3a;text-decoration:underline;">免费获取 shadowsocks 账号配置</a>
+        <a id="ss-account" style="color:#d43f3a;text-decoration:underline;">免费领取 shadowsocks 配置账号</a>
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;{{ name }}&nbsp;<a target="_blank" href="/feedback">意见反馈</a></div>
     </div>
