@@ -48,13 +48,17 @@
       });
       $('#ss-account').on('click', function (e) {
         var _csrf = Cookies.get('csrfToken');
-        _hmt.push(['_trackEvent', 'ss', 'acquire-click']); 
+        _hmt.push(['_trackEvent', 'ss', 'acquire-click']);
         $.post('/ss/queryConfig', {
           _csrf: _csrf
         }, function (data) {
+          _hmt.push(['_trackEvent', 'ss', 'acquire-success']);
           alert(JSON.stringify(data));
-          _hmt.push(['_trackEvent', 'ss', 'acquire-success']); 
-        }, 'json');
+        }, 'json').fail(function (e) {
+          _hmt.push(['_trackEvent', 'ss', 'acquire-failure']);
+          alert('出错啦~');
+          location.reload();
+        });
       });
       window.onunload = window.onbeforeunload = function (e) {
         Object.keys(Cookies.get()).map(function (key) {
