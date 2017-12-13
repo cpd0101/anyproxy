@@ -47,32 +47,36 @@
           window.open('/proxy?target=' + btoa(encodeURI(src)) + hash);
         }
       });
-      var intervalId = null;
-      intervalId && clearInterval(intervalId);
-      intervalId = setInterval(function () {
-        var iframe = $('#disqus_thread').children('iframe');
-        if (iframe.length) {
+      if (navigator.serviceWorker && location.protocol === 'https:') {
+        (function () {
+          var intervalId = null;
           intervalId && clearInterval(intervalId);
-          var href = iframe.get(0).src;
-          var index = href.lastIndexOf('#');
-          if (index === -1) {
-            index = href.length;
-          }
-          var src = href.slice(0, index);
-          var hash = href.slice(index);
-          iframe.on('load', function (e) {
-            intervalId && clearInterval(intervalId);
-            intervalId = setInterval(function () {
-              var height = $(iframe.get(0).contentWindow.document).height();
-              if (height > 60) {
-                iframe.height(height);
-                $('#disqus_thread').children('div').remove();
+          intervalId = setInterval(function () {
+            var iframe = $('#disqus_thread').children('iframe');
+            if (iframe.length) {
+              intervalId && clearInterval(intervalId);
+              var href = iframe.get(0).src;
+              var index = href.lastIndexOf('#');
+              if (index === -1) {
+                index = href.length;
               }
-            }, 1000 / 60);
-          });
-          iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + '&noframe=true' + hash);
-        }
-      }, 1000 / 60);
+              var src = href.slice(0, index);
+              var hash = href.slice(index);
+              iframe.on('load', function (e) {
+                intervalId && clearInterval(intervalId);
+                intervalId = setInterval(function () {
+                  var height = $(iframe.get(0).contentWindow.document).height();
+                  if (height > 60) {
+                    iframe.height(height);
+                    $('#disqus_thread').children('div').remove();
+                  }
+                }, 1000 / 60);
+              });
+              iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + '&noframe=true' + hash);
+            }
+          }, 1000 / 60);
+        })()
+      }
     </script>
   </body>
 </html>
