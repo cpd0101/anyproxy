@@ -28,7 +28,7 @@ class SsserverController extends Controller {
     this.ctx.body = {
       server_name: this.ctx.hostname,
       ...content,
-      expiry: '1 day',
+      expire_date: 'one day',
     };
   }
 }
