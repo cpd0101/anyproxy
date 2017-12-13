@@ -11,7 +11,7 @@ class SsserverController extends Controller {
       fs.readFile(path.join(process.cwd(), 'app', 'config', 'ss-config.json'), (err, data) => {
         if (err) {
           ctx.logger.error(err);
-          reject(err);
+          reject('Not Found');
           return;
         }
         let json = {};
