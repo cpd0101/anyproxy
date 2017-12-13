@@ -243,7 +243,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       return;
     }
     timerId = setTimeout(() => {
-      proxyRes.destroy(new Error('408 Request Timeout'));
+      proxyRes.destroy(new Error('Response Timeout'));
       return;
     }, 30 * 1000);
     for (let i = 0; i < web_o.length; i++) {
