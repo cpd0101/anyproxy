@@ -145,6 +145,12 @@ function handleNode(ctx, node, recurve) {
     node.childNodes = node.childNodes || [];
     node.childNodes = node.childNodes.concat(fragment.childNodes);
   }
+  if (toBoolean(ctx.query.noframe) && tagName === 'head') {
+    const fragmentStr = '<script>window.__defineGetter__("self", function() { return window.top; })</script>';
+    const fragment = parse5.parseFragment(fragmentStr);
+    node.childNodes = node.childNodes || [];
+    node.childNodes = fragment.childNodes.concat(node.childNodes);
+  }
 }
 
 async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
