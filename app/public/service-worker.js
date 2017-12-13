@@ -6,9 +6,15 @@ this.addEventListener('fetch', function (event) {
     var targetURL = location.origin + '/proxy?target=' + btoa(encodeURI(url)) + '&nocookie=true';
     var initOptions = {
       method: request.method,
-      headers: request.headers,
-      referrer: request.referrer
+      headers: request.headers
     };
+    if (request.referrer) {
+      if (request.referrer.indexOf(location.origin) === 0) {
+        initOptions.referrer = request.referrer;
+      } else {
+        initOptions.referrer = location.origin + '/proxy?target=' + btoa(encodeURI(request.referrer)) + '&nocookie=true';
+      }
+    }
     var method = request.method.toUpperCase();
     if (method === 'GET' || method === 'HEAD') {
       event.respondWith(fetch(new Request(targetURL, initOptions)));
