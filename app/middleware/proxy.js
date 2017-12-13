@@ -146,7 +146,8 @@ function handleNode(ctx, node, recurve) {
     node.childNodes = node.childNodes.concat(fragment.childNodes);
   }
   if (toBoolean(ctx.query.noframe) && tagName === 'head') {
-    const fragmentStr = '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>';
+    const fragmentStr = '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>' +
+      '<script>if (navigator.serviceWorker && location.protocol === "https:") { navigator.serviceWorker.register("/service-worker.js"); }</script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = fragment.childNodes.concat(node.childNodes);
@@ -293,11 +294,17 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         httpOnly: false,
       });
     } else if (ctx.target) {
-      await doProxy(ctx, {
-        whiteList,
-        proxyPath,
-        redirectRegex,
-      });
+      try {
+        await doProxy(ctx, {
+          whiteList,
+          proxyPath,
+          redirectRegex,
+        });
+      } catch (e) {
+        ctx.body = `<h3>${e.message}</h3>`;
+        ctx.status = 400;
+        ctx.logger.error(e);
+      }
     } else {
       ctx.redirect('/');
     }
