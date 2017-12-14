@@ -82,7 +82,7 @@ function getProxyURL(ctx, src, nocookie) {
     if (/^javascript\:/.test(src)) {
       return src;
     }
-    const reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu)\.(cc|cn|com)/i;
+    const reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu|bdstatic|alipayobjects)\.(cc|cn|com|net)/i;
     if (reg.test(src)) {
       return src;
     }
@@ -122,7 +122,7 @@ function handleNode(ctx, node, recurve) {
       setAttribute(node.attrs, 'href', getProxyURL(ctx, href, true));
     }
     if (rel === 'shortcut icon') {
-      setAttribute(node.attrs, 'href', '/public/favicon.ico');
+      setAttribute(node.attrs, 'href', '/favicon.ico');
     }
   }
   if (tagName === 'script') {
@@ -136,10 +136,10 @@ function handleNode(ctx, node, recurve) {
     node.childNodes.map(childNode => handleNode(ctx, childNode, recurve));
   }
   if (tagName === 'body') {
-    const fragmentStr = '<script src="/public/jquery.min.js"></script>' +
-      '<script src="/public/js-cookie.min.js"></script>' +
-      '<script src="/public/proxy.js"></script>' +
-      '<script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
+    const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/dixkagbCuyraaCjYhUtw.js"></script>' +
+      '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = node.childNodes.concat(fragment.childNodes);

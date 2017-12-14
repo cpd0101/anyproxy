@@ -4,9 +4,9 @@
     <meta name="keywords" content="{{ name }}, Google, Free, Online, Web, Proxy, 谷歌, 免费, 在线, 网页, 代理, 国外" />
     <meta name="description" content="Free Online Web Proxy 免费在线网页代理" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
-    <link rel="shortcut icon" href="/public/favicon.ico" /> 
+    <link rel="shortcut icon" href="/favicon.ico" /> 
     <title>{{ name }} 免费在线网页代理</title>
-    <link rel="stylesheet" href="/public/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/cupayaBkBRxHECKcstzD.css" />
   </head>
   <body>
     <div style="position:relative;min-height:100%;overflow-x:hidden;">
@@ -32,8 +32,8 @@
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;{{ name }}&nbsp;<a target="_blank" href="/feedback">意见反馈</a></div>
     </div>
-    <script src="/public/jquery.min.js"></script>
-    <script src="/public/js-cookie.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
+    <script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>
     <script>
       var _hmt = _hmt || [];
       $('form').on('submit', function (e) {
@@ -71,6 +71,6 @@
         navigator.serviceWorker.register('/service-worker.js');
       }
     </script>
-    <script src="//hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
   </body>
 </html>

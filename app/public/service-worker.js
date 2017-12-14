@@ -1,7 +1,7 @@
 this.addEventListener('fetch', function (event) {
   var request = event.request;
   var url = request.url;
-  var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu)\.(cc|cn|com)/i;
+  var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu|bdstatic|alipayobjects)\.(cc|cn|com|net)/i;
   if (!reg.test(url)) {
     var targetURL = location.origin + '/proxy?target=' + btoa(encodeURI(url)) + '&nocookie=true';
     var initOptions = {

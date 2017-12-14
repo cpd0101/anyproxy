@@ -21,7 +21,7 @@
       if (/^javascript\:/.test(src)) {
         return src;
       }
-      var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu)\.(cc|cn|com)/i;
+      var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu|bdstatic|alipayobjects)\.(cc|cn|com|net)/i;
       if (reg.test(src)) {
         return src;
       }
@@ -32,7 +32,7 @@
 
   $('img').each(function () {
     var src = $(this).attr('src');
-    if (!(navigator.serviceWorker && !/^http\:/.test(src))) {
+    if (!navigator.serviceWorker || /^http\:/.test(src)) {
       $(this).attr('src', getProxyURL(src, true));
     }
   });
