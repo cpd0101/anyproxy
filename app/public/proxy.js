@@ -21,7 +21,7 @@
       if (/^javascript\:/.test(src)) {
         return src;
       }
-      var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu|bdstatic|alipayobjects)\.(cc|cn|com|net)/i;
+      var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects)\.(cc|cn|com|net)/i;
       if (reg.test(src)) {
         return src;
       }

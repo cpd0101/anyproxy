@@ -6,6 +6,7 @@ const zlib = require('zlib');
 const httpProxy = require('http-proxy-self');
 const httpMocks = require('node-mocks-http-self');
 const parse5 = require('parse5');
+const DOMAIN_WHITE_LIST = require('../common/common').DOMAIN_WHITE_LIST;
 
 let web_o = require('http-proxy-self/lib/http-proxy/passes/web-outgoing');
 web_o = Object.keys(web_o).map(function(pass) {
@@ -82,8 +83,7 @@ function getProxyURL(ctx, src, nocookie) {
     if (/^javascript\:/.test(src)) {
       return src;
     }
-    const reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|sohu|bdstatic|alipayobjects)\.(cc|cn|com|net)/i;
-    if (reg.test(src)) {
+    if (DOMAIN_WHITE_LIST.test(src)) {
       return src;
     }
     return `/proxy?target=${btoa(encodeURI(src))}&nocookie=${nocookie}`;
@@ -138,15 +138,18 @@ function handleNode(ctx, node, recurve) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/dixkagbCuyraaCjYhUtw.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/GXiulozSGtmayQPtzymk.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = node.childNodes.concat(fragment.childNodes);
   }
-  if (toBoolean(ctx.query.noframe) && tagName === 'head') {
-    const fragmentStr = '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>' +
-      '<script>if (navigator.serviceWorker && location.protocol === "https:") { navigator.serviceWorker.register("/service-worker.js"); }</script>';
+  if (tagName === 'head') {
+    let fragmentStr = `<script>window.DOMAIN_WHITE_LIST = ${DOMAIN_WHITE_LIST.toString()}</script>`;
+    if (toBoolean(ctx.query.noframe)) {
+      fragmentStr += '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>' +
+        '<script>if (navigator.serviceWorker && location.protocol === "https:") { navigator.serviceWorker.register("/service-worker.js"); }</script>';
+    }
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = fragment.childNodes.concat(node.childNodes);
