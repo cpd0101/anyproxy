@@ -36,7 +36,6 @@
     <script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>
     <script>window.DOMAIN_WHITE_LIST = {{ DOMAIN_WHITE_LIST }}</script>
     <script>
-      var _hmt = _hmt || [];
       $('form').on('submit', function (e) {
         e.preventDefault();
         var val = $('input[name="target"]').val();
@@ -53,6 +52,7 @@
         window.open('/proxy?target=' + target);
       });
       $('#ss-account').on('click', function (e) {
+        window._hmt = window._hmt || [];
         var _csrf = Cookies.get('csrfToken');
         _hmt.push(['_trackEvent', 'ss', 'acquire-click']);
         $.post('/ss/queryConfig', {
