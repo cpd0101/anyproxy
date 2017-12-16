@@ -70,12 +70,13 @@ function setAttribute(attrs, name, value) {
   return canFind;
 }
 
-function replaceHost(ctx, href) {
+function replaceOrigin(ctx, href) {
   if (!href) {
     return href;
   }
   const hrefURL = url.parse(href);
   hrefURL.host = ctx.host;
+  hrefURL.protocol = ctx.protocol + ':';
   return url.format(hrefURL);
 }
 
@@ -137,7 +138,7 @@ function handleNode(ctx, node, recurve) {
   }
   if (tagName === 'base') {
     const href = getAttribute(node.attrs, 'href');
-    setAttribute(node.attrs, 'href', replaceHost(ctx, href));
+    setAttribute(node.attrs, 'href', replaceOrigin(ctx, href));
     setAttribute(node.attrs, 'data-href', href);
   }
   if (tagName === 'link') {
