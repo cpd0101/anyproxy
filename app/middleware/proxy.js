@@ -75,8 +75,8 @@ function replaceOrigin(ctx, href) {
     return href;
   }
   const hrefURL = url.parse(href);
+  hrefURL.protocol = `${ctx.protocol}:`;
   hrefURL.host = ctx.host;
-  hrefURL.protocol = ctx.protocol + ':';
   return url.format(hrefURL);
 }
 
