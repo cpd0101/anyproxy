@@ -12,13 +12,16 @@
           src = 'http:' + src;
         }
       }
-      if (/^\//.test(src)) {
-        return src;
-      }
       if (/^data\:/.test(src)) {
         return src;
       }
       if (/^javascript\:/.test(src)) {
+        return src;
+      }
+      if (/^\//.test(src)) {
+        return src;
+      }
+      if (!/^http(s)?\:/.test(src)) {
         return src;
       }
       var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects)\.(cc|cn|com|net)/i;

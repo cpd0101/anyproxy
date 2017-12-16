@@ -51,14 +51,32 @@ function getAttribute(attrs, name) {
 }
 
 function setAttribute(attrs, name, value) {
+  let canFind = false;
   if (Array.isArray(attrs)) {
-    attrs.map(attr => {
-      if (attr && (toLowerCase(attr.name) === name)) {
-        attr.value = value;
+    for (let i = 0; i < attrs.length; i++) {
+      if (toLowerCase(attrs[i].name) === name) {
+        attrs[i].value = value;
+        canFind = true;
+        break;
       }
-      return attr;
+    }
+  }
+  if (!canFind && value) {
+    attrs.push({
+      name,
+      value,
     });
   }
+  return canFind;
+}
+
+function replaceHost(ctx, href) {
+  if (!href) {
+    return href;
+  }
+  const hrefURL = url.parse(href);
+  hrefURL.host = ctx.host;
+  return url.format(hrefURL);
 }
 
 function detectHeader(res, key, value) {
@@ -74,13 +92,16 @@ function getProxyURL(ctx, src, nocookie) {
       const targetURL = url.parse(decodeURI(atob(ctx.target)));
       src = targetURL.protocol + src;
     }
-    if (/^\//.test(src)) {
-      return src;
-    }
     if (/^data\:/.test(src)) {
       return src;
     }
     if (/^javascript\:/.test(src)) {
+      return src;
+    }
+    if (/^\//.test(src)) {
+      return src;
+    }
+    if (!/^http(s)?\:/.test(src)) {
       return src;
     }
     if (DOMAIN_WHITE_LIST.test(src)) {
@@ -114,6 +135,11 @@ function handleNode(ctx, node, recurve) {
       setAttribute(node.attrs, 'http-equiv', '');
     }
   }
+  if (tagName === 'base') {
+    const href = getAttribute(node.attrs, 'href');
+    setAttribute(node.attrs, 'href', replaceHost(ctx, href));
+    setAttribute(node.attrs, 'data-href', href);
+  }
   if (tagName === 'link') {
     const href = getAttribute(node.attrs, 'href');
     const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
@@ -138,7 +164,7 @@ function handleNode(ctx, node, recurve) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/GXiulozSGtmayQPtzymk.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/aJNzSJmBipMVESruRpLl.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];

@@ -1,6 +1,9 @@
 this.addEventListener('fetch', function (event) {
   var request = event.request;
   var url = request.url;
+  if (!/^http(s)?\:/.test(url)) {
+    return;
+  }
   var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects)\.(cc|cn|com|net)/i;
   if (reg.test(url)) {
     return;
