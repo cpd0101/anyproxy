@@ -77,24 +77,39 @@
     return '';
   }
 
-  window._hmt = window._hmt || [];
-
-  var backHtml = $('<div style="position:fixed;bottom:32px;right:32px;width:32px;height:32px;box-sizing:content-box;padding:8px;line-height:16px;text-align:center;background:#eee;opacity:0.7;cursor:pointer;z-index:999999999;">' +
-      '<span class="origin-back-close" style="position:absolute;top:0;right:-18px;width:14px;height:14px;line-height:14px;font-size:12px;color:#555;background:#eee;">X</span>' +
-      '<span style="line-height:16px;font-size:14px;color:#555;">访问<br>源站</span>' +
-    '</div>');
-  backHtml.on('click', function (e) {
-    var href = decodeURI(atob(getQuery(location.search).target || ''));
-    if (!href) {
-      href = getOrigin(decodeURI(atob(Cookies.get('target') || ''))) + location.pathname + location.search + location.hash;
+  function toBoolean(str) {
+    if (typeof str === 'boolean') {
+      return str;
     }
-    _hmt.push(['_trackEvent', 'origin', 'origin-back-access']);
-    window.open(href);
-  }).on('click', '.origin-back-close', function (e) {
-    e.stopPropagation();
-    backHtml.remove();
-    _hmt.push(['_trackEvent', 'origin', 'origin-back-close']);
-    return false;
-  });
-  $('body').append(backHtml);
+    if (str === 'false') {
+      return false;
+    } else if (str === 'true') {
+      return true;
+    }
+    return !!Number(str);
+  }
+
+  var query = getQuery(location.search);
+
+  if (!toBoolean(query.noframe)) {
+    window._hmt = window._hmt || [];
+    var backHtml = $('<div style="position:fixed;bottom:32px;right:32px;width:32px;height:32px;box-sizing:content-box;padding:8px;line-height:16px;text-align:center;background:#eee;opacity:0.7;cursor:pointer;z-index:999999999;">' +
+        '<span class="origin-back-close" style="position:absolute;top:0;right:-18px;width:14px;height:14px;line-height:14px;font-size:12px;color:#555;background:#eee;">X</span>' +
+        '<span style="line-height:16px;font-size:14px;color:#555;">访问<br>源站</span>' +
+      '</div>');
+    backHtml.on('click', function (e) {
+      var href = decodeURI(atob(query.target || ''));
+      if (!href) {
+        href = getOrigin(decodeURI(atob(Cookies.get('target') || ''))) + location.pathname + location.search + location.hash;
+      }
+      _hmt.push(['_trackEvent', 'origin', 'origin-back-access']);
+      window.open(href);
+    }).on('click', '.origin-back-close', function (e) {
+      e.stopPropagation();
+      backHtml.remove();
+      _hmt.push(['_trackEvent', 'origin', 'origin-back-close']);
+      return false;
+    });
+    $('body').append(backHtml);
+  }
 })();
