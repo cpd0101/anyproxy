@@ -12,5 +12,5 @@ module.exports = {
     }
     return { name, logo, href };
   },
-  DOMAIN_WHITE_LIST: /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects)\.(cc|cn|com|net)/i,
+  DOMAIN_WHITE_LIST: /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic)\.(cc|cn|com|net)/i,
 };

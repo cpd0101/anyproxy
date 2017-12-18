@@ -46,7 +46,7 @@
       $('form').on('submit', function (e) {
         e.preventDefault();
         var val = $('input[name="target"]').val();
-        var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects)\.(cc|cn|com|net)/i;
+        var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic)\.(cc|cn|com|net)/i;
         if (reg.test(val)) {
           window.open(val);
         } else {
@@ -85,5 +85,6 @@
       }
     </script>
     <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+    <script src="https://zz.bdstatic.com/linksubmit/push.js"></script>
   </body>
 </html>
