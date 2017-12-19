@@ -20,7 +20,10 @@
           <div id="disqus_thread"></div>
         </div>
       </div>
-      <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">&copy;{{ year }}&nbsp;<a target="_blank" href="/">{{ name }}</a></div>
+      <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
+        &copy;{{ year }}&nbsp;
+        <a target="_blank" href="/">{{ name }}</a>
+      </div>
     </div>
     <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
     <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
