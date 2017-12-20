@@ -35,7 +35,7 @@
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/IpudeejsIinMngrraMKT.jpg" />
       </div>
       <div class="col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1 text-center" style="padding:5px 0 60px;font-size:12px;">
-        用支付宝扫一扫红色红包码，每天都能领取一个红包。<br>领取红包后可打赏给蓝色收款码，帮助完善本站体验。
+        用支付宝扫一扫红色红包码，每天都能领取一个红包。<br>领取红包后可打赏给蓝色收款码，帮助本站扩充带宽。
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
