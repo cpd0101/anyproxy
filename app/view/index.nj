@@ -1,16 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="keywords" content="{{ name }},Proxy,Google,Shadowsocks" />
-    <meta name="description" content="Free Online Web Proxy 免费在线网页代理" />
+    <meta name="description" content="Online Web Proxy 在线网页代理" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <link rel="shortcut icon" href="/favicon.ico" /> 
-    <title>{{ name }} 免费在线网页代理</title>
+    <title>{{ name }} 在线网页代理</title>
     <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/cupayaBkBRxHECKcstzD.css" />
   </head>
   <body>
-    <div style="position:relative;min-height:100%;overflow-x:hidden;">
-      <div class="text-center" style="margin:45px 0 30px;"><h2>免费在线网页代理</h2></div>
+    <div style="position:relative;min-height:100vh;overflow-x:hidden;">
+      <div class="text-center" style="margin:45px 0 30px;"><h2>在线网页代理</h2></div>
       <div class="text-center">
         <a target="_self" href="{{ href }}">
           <img width="300" height="80" src="{{ logo }}" />
@@ -34,8 +35,8 @@
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/kRCtAiweuVBXFACuizoz.jpg" />
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/IpudeejsIinMngrraMKT.jpg" />
       </div>
-      <div class="col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1 text-center" style="padding:5px 0 60px;font-size:12px;">
-        用支付宝扫一扫红色红包码，每天都能领取一个红包。<br>领取红包后可打赏给蓝色收款码，帮助本站扩充带宽。
+      <div class="text-center" style="padding:5px 10px 60px;font-size:12px;">
+        用支付宝扫一扫红色红包码，每天都能领取一个红包。<br />领取红包后可打赏给蓝色收款码，帮助本站扩充带宽。
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
