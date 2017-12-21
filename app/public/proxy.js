@@ -97,13 +97,13 @@
       if (!href) {
         href = getOrigin(decodeURI(atob(Cookies.get('target') || ''))) + location.pathname + location.search + location.hash;
       }
-      _hmt.push(['_trackEvent', 'origin', 'origin-back-access']);
+      _hmt.push(['_trackEvent', 'origin', 'back-access']);
       window.open(href);
     }).on('click', '.origin-back-close', function (e) {
       e.stopImmediatePropagation();
       e.stopPropagation();
       backHtml.remove();
-      _hmt.push(['_trackEvent', 'origin', 'origin-back-close']);
+      _hmt.push(['_trackEvent', 'origin', 'back-close']);
       return false;
     });
     $('body').append(backHtml);

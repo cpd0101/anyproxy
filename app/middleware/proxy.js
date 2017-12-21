@@ -156,7 +156,7 @@ function handleNode(ctx, node, recurve) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/AIVFSTbQIIkVHHyRIPoQ.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/FJeJbvyyPQzpFmrUCCBB.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
@@ -328,6 +328,10 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
         ctx.body = `
           <h3 style="visibility:hidden;">${err.message}</h3>
           <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+          <script>
+            var _hmt = _hmt || [];
+            _hmt.push(['_trackEvent', '404', 'not-found']);
+          </script>
           <script type="text/javascript" src="https://qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8" homePageUrl="/" homePageName="返回首页"></script>
         `;
         ctx.status = 404;
