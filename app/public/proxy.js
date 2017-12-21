@@ -51,7 +51,7 @@
       if (!/^http(s)?\:/.test(src)) {
         return src;
       }
-      var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic)\.(cc|cn|com|net)/i;
+      var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq)\.(cc|cn|com|net|org)/i;
       if (reg.test(src)) {
         return src;
       }

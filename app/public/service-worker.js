@@ -4,7 +4,7 @@ this.addEventListener('fetch', function (event) {
   if (!/^http(s)?\:/.test(url)) {
     return;
   }
-  var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic)\.(cc|cn|com|net)/i;
+  var reg = /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq)\.(cc|cn|com|net|org)/i;
   if (reg.test(url)) {
     return;
   }
