@@ -7,22 +7,29 @@ const fs = require('fs');
 class SsserverController extends Controller {
   async query() {
     const ctx = this.ctx;
-    const content = await new Promise((resolve, reject) => {
-      fs.readFile(path.join(process.cwd(), 'app', 'config', 'ss-config.json'), (err, data) => {
-        if (err) {
-          ctx.logger.error(err);
-          reject('Not Found');
-          return;
-        }
-        let json = {};
-        try {
-          json = JSON.parse(data.toString());
-        } catch (e) {
-          json = {};
-        }
-        resolve(json);
+    let content = {};
+    try {
+      content = await new Promise((resolve, reject) => {
+        fs.readFile(path.join(process.cwd(), 'app', 'config', 'ss-config.json'), (err, data) => {
+          if (err) {
+            ctx.logger.error(err);
+            reject({ message: 'Not Found' });
+            return;
+          }
+          let json = {};
+          try {
+            json = JSON.parse(data.toString());
+          } catch (e) {
+            json = {};
+          }
+          resolve(json);
+        });
       });
-    });
+    } catch (e) {
+      this.ctx.body = { message: e.message };
+      this.ctx.status = 404;
+      return;
+    }
     this.ctx.assertCsrf();
     this.ctx.rotateCsrfSecret();
     this.ctx.body = {
