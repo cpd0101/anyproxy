@@ -51,6 +51,9 @@
       $('form').on('submit', function (e) {
         e.preventDefault();
         var val = $('input[name="target"]').val();
+        if (!/^http(s)?\:/.test(val)) {
+          return alert('请输入正确的网址');
+        }
         var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic)\.(cc|cn|com|net)/i;
         if (reg.test(val)) {
           window.open(val);

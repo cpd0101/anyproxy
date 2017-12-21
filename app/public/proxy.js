@@ -1,25 +1,52 @@
 (function () {
   var $ = window.jQuery.noConflict();
   var Cookies = window.Cookies.noConflict();
-  var target = decodeURI(atob(Cookies.get('target')));
+
+  function getQuery(search) {
+    var match = null;
+    var urlParams = {};
+    var reg = /([^=&#]+)=([^&#]*)/ig;
+    var query = search.slice(1);
+    while (match = reg.exec(query)) {
+      urlParams[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+    }
+    return urlParams;
+  }
+
+  function getOrigin(href) {
+    var reg = /^(http[s]?\:\/\/[^\/]+)/i;
+    var match = reg.exec(href);
+    if (match) {
+      return match[0];
+    }
+    return '';
+  }
+
+  function toBoolean(str) {
+    if (typeof str === 'boolean') {
+      return str;
+    }
+    if (str === 'false') {
+      return false;
+    } else if (str === 'true') {
+      return true;
+    }
+    return !!Number(str);
+  }
+
+  var query = getQuery(location.search);
+  var target = query.target || Cookies.get('target') || '';
+  var targetURL = decodeURI(atob(target));
+
   function getProxyURL(src, nocookie) {
     if (typeof src === 'string') {
       if (/^\/\//.test(src)) {
-        var isHttps = /^https\:/.test(target);
+        var isHttps = /^https\:/.test(targetURL);
         if (isHttps) {
           src = 'https:' + src;
         } else {
           src = 'http:' + src;
         }
-      }
-      if (/^data\:/.test(src)) {
-        return src;
-      }
-      if (/^javascript\:/.test(src)) {
-        return src;
-      }
-      if (/^\//.test(src)) {
-        return src;
       }
       if (!/^http(s)?\:/.test(src)) {
         return src;
@@ -56,40 +83,6 @@
       e.stopPropagation();
     }
   }, true);
-
-  function getQuery(search) {
-    var match = null;
-    var urlParams = {};
-    var reg = /([^=&#]+)=([^&#]*)/ig;
-    var query = search.slice(1);
-    while (match = reg.exec(query)) {
-      urlParams[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
-    }
-    return urlParams;
-  }
-
-  function getOrigin(href) {
-    var reg = /^(http[s]?\:\/\/[^\/]+)/i;
-    var match = reg.exec(href);
-    if (match) {
-      return match[0];
-    }
-    return '';
-  }
-
-  function toBoolean(str) {
-    if (typeof str === 'boolean') {
-      return str;
-    }
-    if (str === 'false') {
-      return false;
-    } else if (str === 'true') {
-      return true;
-    }
-    return !!Number(str);
-  }
-
-  var query = getQuery(location.search);
 
   if (!toBoolean(query.noframe)) {
     window._hmt = window._hmt || [];

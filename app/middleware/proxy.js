@@ -93,15 +93,6 @@ function getProxyURL(ctx, src, nocookie) {
       const targetURL = url.parse(decodeURI(atob(ctx.target)));
       src = targetURL.protocol + src;
     }
-    if (/^data\:/.test(src)) {
-      return src;
-    }
-    if (/^javascript\:/.test(src)) {
-      return src;
-    }
-    if (/^\//.test(src)) {
-      return src;
-    }
     if (!/^http(s)?\:/.test(src)) {
       return src;
     }
@@ -165,7 +156,7 @@ function handleNode(ctx, node, recurve) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/PDAGvoDoSuebQvVFbcVT.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/gqYelUSsFoDVouDoLxPp.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
