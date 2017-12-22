@@ -18,7 +18,7 @@
       </div>
       <div class="row" style="padding:0 0 90px;">
         <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-          <div id="disqus_thread"></div>
+          <div id="SOHUCS" sid="feedback" ></div> 
         </div>
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
@@ -26,61 +26,18 @@
         <a target="_blank" href="/">{{ name }}</a>
       </div>
     </div>
-    <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
-    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
-    <script>
-    (function() {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://anyproxy.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <script>
-      $('#disqus_thread').delegate('a', 'mousedown', function (e) {
-        if ($(this).text() === 'Reload') {
-          var iframe = $('#disqus_thread').children('iframe');
-          var href = iframe.get(0).src;
-          var index = href.lastIndexOf('#');
-          if (index === -1) {
-            index = href.length;
-          }
-          var src = href.slice(0, index);
-          var hash = href.slice(index);
-          window.open('/proxy?target=' + btoa(encodeURI(src)) + hash);
+    <script type="text/javascript"> 
+      (function(){ 
+        var appid = 'cytm4uMJo'; 
+        var conf = 'prod_2f5d9c62a31928067b5e069bcb9e23be'; 
+        var width = window.innerWidth || document.documentElement.clientWidth; 
+        if (width < 960) { 
+          window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+        } else {
+          var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})});
         }
-      });
-      if (navigator.serviceWorker && location.protocol === 'https:') {
-        (function () {
-          var intervalId = null;
-          intervalId && clearInterval(intervalId);
-          intervalId = setInterval(function () {
-            var iframe = $('#disqus_thread').children('iframe');
-            if (iframe.length) {
-              intervalId && clearInterval(intervalId);
-              var href = iframe.get(0).src;
-              var index = href.lastIndexOf('#');
-              if (index === -1) {
-                index = href.length;
-              }
-              var src = href.slice(0, index);
-              var hash = href.slice(index);
-              iframe.on('load', function (e) {
-                intervalId && clearInterval(intervalId);
-                intervalId = setInterval(function () {
-                  var height = $(iframe.get(0).contentWindow.document).height();
-                  if (height > 60) {
-                    iframe.height(height);
-                    $('#disqus_thread').children('div').remove();
-                  }
-                }, 1000 / 60);
-              });
-              iframe.attr('src', '/proxy?target=' + btoa(encodeURI(src)) + '&noframe=true' + hash);
-            }
-          }, 1000 / 60);
-        })()
-      }
+      })();
     </script>
+    <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
   </body>
 </html>
