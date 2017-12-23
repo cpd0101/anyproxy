@@ -35,8 +35,14 @@
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/kRCtAiweuVBXFACuizoz.jpg" />
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/IpudeejsIinMngrraMKT.jpg" />
       </div>
-      <div class="text-center" style="padding:5px 10px 60px;font-size:12px;">
+      <div class="text-center" style="padding:5px 10px;font-size:12px;">
         用支付宝扫一扫红色红包码，每天都能领取一个红包。<br />领取红包后可打赏给蓝色收款码，帮助本站扩充带宽。
+      </div>
+      <div class="text-center">
+        <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/wejQRxRWDySalPkBHNuV.jpg" />
+      </div>
+      <div class="text-center" style="padding:5px 10px 90px;font-size:12px;">
+        如果觉得本站还不错，请用微信扫一扫进行赞赏。<br />若有任何建议或意见，请在底部 <a target="_blank" href="/feedback">意见反馈</a> 里留言。
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
