@@ -52,7 +52,6 @@
     </div>
     <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
     <script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>
-    <script>window.DOMAIN_WHITE_LIST = {{ DOMAIN_WHITE_LIST }}</script>
     <script>
       $('form').on('submit', function (e) {
         e.preventDefault();
@@ -60,8 +59,8 @@
         if (!/^http(s)?\:/.test(val)) {
           return alert('请输入正确的网址');
         }
-        var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq)\.(cc|cn|com|net|org)/i;
-        if (reg.test(val)) {
+        var reg = {{ DOMAIN_WHITE_LIST }};
+        if (reg && typeof reg.test === 'function' && reg.test(val)) {
           window.open(val);
         } else {
           window.open('/proxy?target=' + btoa(encodeURI(val)));

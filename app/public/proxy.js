@@ -51,8 +51,8 @@
       if (!/^http(s)?\:/.test(src)) {
         return src;
       }
-      var reg = window.DOMAIN_WHITE_LIST || /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq)\.(cc|cn|com|net|org)/i;
-      if (reg.test(src)) {
+      var reg = window.DOMAIN_WHITE_LIST;
+      if (reg && typeof reg.test === 'function' && reg.test(src)) {
         return src;
       }
       return '/proxy?target=' + btoa(encodeURI(src)) + '&nocookie=' + nocookie;
