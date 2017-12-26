@@ -175,7 +175,7 @@ function handleNode(ctx, node, recurve) {
 }
 
 async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
-  const isTargetRequest = ctx.path === proxyPath && ctx.query.target;
+  const isTargetRequest = !!((ctx.path === proxyPath && ctx.query.target) || (ctx.path === proxyPath && btoa(encodeURI(ctx.query.url || ''))));
   const target = decodeURI(atob(ctx.target));
   const bufferStream = new stream.PassThrough();
   bufferStream.end(Buffer.from(ctx.request.rawBody || ''));
@@ -223,7 +223,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
     if (detectHeader(proxyRes, 'content-type', 'text/html')) {
       isHtml = true;
     }
-    if (isOk && isHtml && isUTF8) {
+    if (isOk && isHtml && isUTF8 && !toBoolean(ctx.query.nocookie)) {
       response = httpMocks.createResponse();
       isMocks = true;
     }
@@ -309,7 +309,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
     await next();
     if (!ctx.target) {
       const referer = url.parse(ctx.headers.referer || '', true);
-      ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target');
+      ctx.target = (ctx.path === proxyPath && ctx.query.target) || referer.query.target || ctx.cookies.get('target') || (ctx.path === proxyPath && btoa(encodeURI(ctx.query.url || '')));
     }
     if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && ctx.target)) {
       if (ctx.method === 'GET') {
