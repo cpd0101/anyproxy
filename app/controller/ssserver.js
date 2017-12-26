@@ -26,17 +26,28 @@ class SsserverController extends Controller {
         });
       });
     } catch (e) {
-      this.ctx.body = { message: e.message };
-      this.ctx.status = 404;
+      ctx.body = { message: e.message };
+      ctx.status = 404;
       return;
     }
-    this.ctx.assertCsrf();
-    this.ctx.rotateCsrfSecret();
-    this.ctx.body = {
+    ctx.assertCsrf();
+    ctx.rotateCsrfSecret();
+    ctx.body = {
       server_name: this.ctx.hostname,
       ...content,
       expire_date: 'one day',
     };
+  }
+
+  async getip() {
+    const ctx = this.ctx;
+    const ip = ctx.query.ip || ctx.ip || '';
+    const callback = ctx.query.callback || '';
+    const result = await ctx.curl(`http://ip.chinaz.com/ajaxsync.aspx?at=ipbatch&ip=${ip}&callback=${callback}`);
+    ctx.status = result.status;
+    ctx.set(result.headers);
+    ctx.set('content-type', 'application/x-javascript');
+    ctx.body = result.data;
   }
 }
 

@@ -5,6 +5,7 @@ const WHITE_LIST = [
   '/',
   '/feedback',
   '/ss/queryConfig',
+  '/ss/getip',
 ];
 
 const PROXY_PATH = '/proxy';
