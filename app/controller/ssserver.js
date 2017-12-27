@@ -33,9 +33,9 @@ class SsserverController extends Controller {
     ctx.assertCsrf();
     ctx.rotateCsrfSecret();
     ctx.body = {
-      server_name: this.ctx.hostname,
+      server: '47.88.58.234',
       ...content,
-      expire_date: 'one day',
+      expiry_date: 'one day',
     };
   }
 
