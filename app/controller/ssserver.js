@@ -7,6 +7,8 @@ const fs = require('fs');
 class SsserverController extends Controller {
   async query() {
     const ctx = this.ctx;
+    ctx.assertCsrf();
+    ctx.rotateCsrfSecret();
     let content = {};
     try {
       content = await new Promise((resolve, reject) => {
@@ -30,10 +32,16 @@ class SsserverController extends Controller {
       ctx.status = 404;
       return;
     }
-    ctx.assertCsrf();
-    ctx.rotateCsrfSecret();
+    let ip = {};
+    try {
+      const result = await ctx.curl('http://ip.chinaz.com/getip.aspx');
+      const pat = /\{.*\}/;
+      ip  = (new Function('return ' + result.data.toString().match(pat)[0]))();
+    } catch (e) {
+      ctx.logger.error(e);
+    }
     ctx.body = {
-      server: '47.88.58.234',
+      server: ip.ip || '47.88.58.234',
       ...content,
       expiry_date: 'one day',
     };
