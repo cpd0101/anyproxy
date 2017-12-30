@@ -87,10 +87,10 @@ function detectHeader(res, key, value) {
   return false;
 }
 
-function getProxyURL(ctx, src, nocookie) {
+function getProxyURL(ctx, src, nocookie, target) {
   if (typeof src === 'string') {
     if (/^\/\//.test(src)) {
-      const targetURL = url.parse(decodeURI(atob(ctx.target)));
+      const targetURL = url.parse(decodeURI(atob(target)));
       src = targetURL.protocol + src;
     }
     if (!/^http(s)?\:/.test(src)) {
@@ -109,14 +109,14 @@ function rewriteLocation(ctx, proxyRes, options) {
   const u = url.parse(proxyRes.headers['location'] || '');
 
   if (ctx.hostname !== u.hostname && ((u.host && target.host !== u.host) || (u.protocol && target.protocol !== u.protocol))) {
-    proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie);
+    proxyRes.headers['location'] = getProxyURL(ctx, u.format(), options.nocookie, btoa(encodeURI(options.target)));
     return true;
   }
 
   return false;
 }
 
-function handleNode(ctx, node, recurve) {
+function handleNode(ctx, node, recurve, target) {
   if (!node) {
     return;
   }
@@ -137,7 +137,7 @@ function handleNode(ctx, node, recurve) {
     const rel = toLowerCase(getAttribute(node.attrs, 'rel'));
     const type = toLowerCase(getAttribute(node.attrs, 'type'));
     if (rel === 'stylesheet' || type === 'text/css') {
-      setAttribute(node.attrs, 'href', getProxyURL(ctx, href, true));
+      setAttribute(node.attrs, 'href', getProxyURL(ctx, href, true, target));
     }
     if (rel === 'shortcut icon') {
       setAttribute(node.attrs, 'href', '/favicon.ico');
@@ -145,13 +145,13 @@ function handleNode(ctx, node, recurve) {
   }
   if (tagName === 'script') {
     const src = getAttribute(node.attrs, 'src');
-    setAttribute(node.attrs, 'src', getProxyURL(ctx, src, true));
+    setAttribute(node.attrs, 'src', getProxyURL(ctx, src, true, target));
   }
   if (Array.isArray(node.childNodes) && recurve) {
     if (tagName === 'head' || tagName === 'body') {
       recurve = false;
     }
-    node.childNodes.map(childNode => handleNode(ctx, childNode, recurve));
+    node.childNodes.map(childNode => handleNode(ctx, childNode, recurve, target));
   }
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
@@ -174,13 +174,13 @@ function handleNode(ctx, node, recurve) {
   }
 }
 
-async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
-  const isTargetRequest = !!ctx.targetRequest;
-  const target = decodeURI(atob(ctx.target));
+async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest, target }) {
+  const isTargetRequest = !!targetRequest;
+  const targetURL = decodeURI(atob(target));
   const bufferStream = new stream.PassThrough();
   bufferStream.end(Buffer.from(ctx.request.rawBody || ''));
   const options = {
-    target,
+    target: targetURL,
     changeOrigin: true,
     prependPath: isTargetRequest,
     ignorePath: isTargetRequest,
@@ -247,7 +247,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
       hasSetCookie = true;
     }
     if (isTargetRequest && !toBoolean(ctx.query.nocookie)) {
-      ctx.cookies.set('target', ctx.target, {
+      ctx.cookies.set('target', target, {
         httpOnly: false,
       });
       hasSetCookie = true;
@@ -286,11 +286,11 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
         if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
           const document = parse5.parse(html.toString());
-          handleNode(ctx, document, true);
+          handleNode(ctx, document, true, target);
           ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
         } else {
           const doc = parse5.parse(buffer.toString());
-          handleNode(ctx, doc, true);
+          handleNode(ctx, doc, true, target);
           ctx.body = Buffer.from(parse5.serialize(doc));
         }
         for (let i = 0; i < web_o.length; i++) {
@@ -307,23 +307,23 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex }) {
 module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
   return async function proxy(ctx, next) {
     await next();
-    if (!ctx.target) {
-      const referer = url.parse(ctx.headers.referer || '', true);
-      ctx.targetRequest = (ctx.path === proxyPath && ctx.query.target) || (ctx.path === proxyPath && btoa(encodeURI(ctx.query.url || '')));
-      ctx.target = ctx.targetRequest || referer.query.target || ctx.cookies.get('target');
-    }
-    if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && ctx.target)) {
+    const referer = url.parse(ctx.headers.referer || '', true);
+    const targetRequest = (ctx.path === proxyPath && ctx.query.target) || (ctx.path === proxyPath && btoa(encodeURI(ctx.query.url || '')));
+    const target = targetRequest || referer.query.target || ctx.cookies.get('target');
+    if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && target)) {
       if (ctx.method === 'GET') {
         ctx.cookies.set('target', null, {
           httpOnly: false,
         });
       }
-    } else if (ctx.target) {
+    } else if (target) {
       try {
         await doProxy(ctx, {
           whiteList,
           proxyPath,
           redirectRegex,
+          targetRequest,
+          target,
         });
       } catch (err) {
         ctx.body = `
