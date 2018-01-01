@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 class SsserverController extends Controller {
-  async query() {
+  async getconfig() {
     const ctx = this.ctx;
     ctx.assertCsrf();
     ctx.rotateCsrfSecret();

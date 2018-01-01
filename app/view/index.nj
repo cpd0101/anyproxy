@@ -13,7 +13,7 @@
     <div style="position:relative;min-height:100vh;overflow-x:hidden;">
       <div class="text-center" style="margin:45px 0 30px;"><h2>在线网页代理</h2></div>
       <div class="text-center">
-        <a target="_self" href="{{ href }}">
+        <a target="_self" href="/">
           <img width="300" height="80" src="{{ logo }}" />
         </a>
       </div>
@@ -76,7 +76,7 @@
         window._hmt = window._hmt || [];
         var _csrf = Cookies.get('csrfToken');
         _hmt.push(['_trackEvent', 'ss', 'acquire-click']);
-        $.post('/ss/queryConfig', {
+        $.post('/ss/getconfig', {
           _csrf: _csrf
         }, function (data) {
           _hmt.push(['_trackEvent', 'ss', 'acquire-success']);

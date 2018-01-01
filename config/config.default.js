@@ -4,7 +4,7 @@ const url = require('url');
 const WHITE_LIST = [
   '/',
   '/feedback',
-  '/ss/queryConfig',
+  '/ss/getconfig',
   '/ss/getip',
 ];
 
