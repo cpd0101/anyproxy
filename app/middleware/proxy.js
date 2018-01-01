@@ -3,6 +3,7 @@
 const stream = require('stream');
 const url = require('url');
 const zlib = require('zlib');
+const iconv = require('iconv-lite');
 const httpProxy = require('http-proxy-self');
 const httpMocks = require('node-mocks-http-self');
 const parse5 = require('parse5');
@@ -156,7 +157,7 @@ function handleNode(ctx, node, recurve, target) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/IBqVggthfTJiExzsDOga.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/IFTEGvwWMmGRyRoPTqQv.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
@@ -197,6 +198,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
   let isRedirect = false;
   let isHtml = false;
   let isUTF8 = false;
+  let isGBK = false;
   let isMocks = false;
   let response = ctx.res;
   let timerId = null;
@@ -217,13 +219,16 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
     if (proxyRes.statusCode === 200) {
       isOk = true;
     }
-    if (detectHeader(proxyRes, 'content-type', 'utf-8') || !detectHeader(proxyRes, 'content-type', 'charset')) {
-      isUTF8 = true;
-    }
     if (detectHeader(proxyRes, 'content-type', 'text/html')) {
       isHtml = true;
     }
-    if (isOk && isHtml && isUTF8 && !toBoolean(ctx.query.nocookie)) {
+    if (detectHeader(proxyRes, 'content-type', 'utf-8')) {
+      isUTF8 = true;
+    }
+    if (detectHeader(proxyRes, 'content-type', 'gbk')) {
+      isGBK = true;
+    }
+    if (isOk && isHtml && !toBoolean(ctx.query.nocookie)) {
       response = httpMocks.createResponse();
       isMocks = true;
     }
@@ -285,13 +290,31 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
         const buffer = response._getData() ? Buffer.from(response._getData()) : response._getBuffer();
         if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
-          const document = parse5.parse(html.toString());
-          handleNode(ctx, document, true, target);
-          ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(document)));
-        } else {
-          const doc = parse5.parse(buffer.toString());
+          let str = html.toString();
+          if (isGBK || (!isUTF8 && str.indexOf('�') !== -1)) {
+            isGBK = true;
+            str = iconv.decode(html, 'gbk');
+          }
+          const doc = parse5.parse(str);
           handleNode(ctx, doc, true, target);
-          ctx.body = Buffer.from(parse5.serialize(doc));
+          if (isGBK) {
+            ctx.body = zlib.gzipSync(iconv.encode(parse5.serialize(doc), 'gbk'));
+          } else {
+            ctx.body = zlib.gzipSync(Buffer.from(parse5.serialize(doc)));
+          }
+        } else {
+          let str = buffer.toString();
+          if (isGBK || (!isUTF8 && str.indexOf('�') !== -1)) {
+            isGBK = true;
+            str = iconv.decode(buffer, 'gbk');
+          }
+          const doc = parse5.parse(str);
+          handleNode(ctx, doc, true, target);
+          if (isGBK) {
+            ctx.body = iconv.encode(parse5.serialize(doc), 'gbk');
+          } else {
+            ctx.body = Buffer.from(parse5.serialize(doc));
+          }
         }
         for (let i = 0; i < web_o.length; i++) {
           if (web_o[i](ctx.req, ctx.res, response, options)) {

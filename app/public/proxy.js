@@ -90,7 +90,7 @@
         '<span class="origin-back-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;">' +
           '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
         '</span>' +
-        '<span style="font-size:14px;color:#555;">访问<br />源站</span>' +
+        '<span style="font-size:14px;color:#555;">\u8bbf\u95ee<br />\u6e90\u7ad9</span>' +
       '</div>');
     backHtml.on('click', function (e) {
       var href = decodeURI(atob(query.target || ''));
