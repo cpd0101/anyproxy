@@ -157,7 +157,7 @@ function handleNode(ctx, node, recurve, target) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="https://gw.alipayobjects.com/os/rmsportal/IFTEGvwWMmGRyRoPTqQv.js"></script>' +
+      '<script src="https://gw.alipayobjects.com/os/rmsportal/MsBKqKvbCeWpAJymQVVF.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
@@ -316,6 +316,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
             ctx.body = Buffer.from(parse5.serialize(doc));
           }
         }
+        ctx.set('cache-control', 'no-cache');
         for (let i = 0; i < web_o.length; i++) {
           if (web_o[i](ctx.req, ctx.res, response, options)) {
             break;
@@ -331,7 +332,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
   return async function proxy(ctx, next) {
     await next();
     const referer = url.parse(ctx.headers.referer || '', true);
-    const targetRequest = (ctx.path === proxyPath && ctx.query.target) || (ctx.path === proxyPath && btoa(encodeURI(ctx.query.url || '')));
+    const targetRequest = (ctx.path === proxyPath && (ctx.query.target || btoa(encodeURI(ctx.query.url || ''))));
     const target = targetRequest || referer.query.target || ctx.cookies.get('target');
     if (whiteList.includes(ctx.path) && !(ctx.cookies.get('redirect') && target)) {
       if (ctx.method === 'GET') {

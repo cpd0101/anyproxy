@@ -35,8 +35,8 @@
   }
 
   var query = getQuery(location.search);
-  var target = query.target || Cookies.get('target') || '';
-  var targetURL = decodeURI(atob(target));
+  var target = (location.pathname === '/proxy' && (query.target || btoa(encodeURI(query.url || ''))));
+  var targetURL = decodeURI(atob(target || Cookies.get('target') || ''));
 
   function getProxyURL(src, nocookie) {
     if (typeof src === 'string') {
@@ -93,7 +93,7 @@
         '<span style="font-size:14px;color:#555;">\u8bbf\u95ee<br />\u6e90\u7ad9</span>' +
       '</div>');
     backHtml.on('click', function (e) {
-      var href = decodeURI(atob(query.target || ''));
+      var href = decodeURI(atob(target || ''));
       if (!href) {
         href = getOrigin(decodeURI(atob(Cookies.get('target') || ''))) + location.pathname + location.search + location.hash;
       }
