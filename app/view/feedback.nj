@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <meta name="keywords" content="{{ name }}, Proxy, Google, Shadowsocks" />
-    <meta name="description" content="Online Web Proxy 在线网页代理" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <title>{{ name }} 意见反馈</title>
+    <title>意见反馈</title>
     <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/cupayaBkBRxHECKcstzD.css" />
   </head>
   <body>
     <div style="position:relative;min-height:100vh;overflow-x:hidden;">
       <div class="text-center" style="padding:30px 0 45px;">
-        <a target="_blank" href="/" rel="home">
-          <img width="300" height="80" src="{{ logo }}" />
+        <a target="_blank" href="https://s.click.taobao.com/t?e=m%3D2%26s%3D05nbWrmohH4cQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClArEVyXG2iE4hqqacliaqsdBvfiy%2F4trK8zo9t866U1ORQVUdI%2BBf9CBmuFrWaviWBhmIkXBqRClNTcEU%2BDykfuSM%2BhtH71aX6uIOTs4KMj3yjpOyWSRdiSZDEm2YKA6YIrbIzrZDfgWtwGXLU4WXsy8CZuZoOOkzXFxfvOyje0ynomfkDJRs%2BhU%3D">
+          <img width="300" src="https://gw.alipayobjects.com/zos/rmsportal/mLMbolszoKKAPHiClcvt.jpg" />
         </a>
       </div>
       <div class="row" style="padding:0 0 90px;">
