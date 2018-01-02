@@ -6,5 +6,5 @@ module.exports = {
     const logo = 'https://gw.alipayobjects.com/zos/rmsportal/MFrHApzagTDXZxzavQcR.png';
     return { name, logo };
   },
-  DOMAIN_WHITE_LIST: /^http(s)?\:\/\/(.+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq|itc|sohucs|taobao|tmall)\.(cc|cn|com|net|org)/i,
+  DOMAIN_WHITE_LIST: /^http(s)?\:\/\/([^\/]+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq|itc|sohucs|taobao|tmall)\.(cc|cn|com|net|org)/i,
 };

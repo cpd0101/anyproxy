@@ -271,6 +271,7 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
       proxyRes.destroy(new Error('Response Timeout'));
       return;
     }, 30 * 1000);
+    ctx.set('access-control-allow-origin', '*');
     for (let i = 0; i < web_o.length; i++) {
       if (web_o[i](ctx.req, response, proxyRes, options)) { break; }
     }
