@@ -12,7 +12,7 @@
   <body>
     <div style="position:relative;min-height:100vh;overflow-x:hidden;">
       <div class="text-center" style="padding:30px 0 45px;">
-        <a target="_blank" href="/">
+        <a target="_blank" href="/" rel="home">
           <img width="300" height="80" src="{{ logo }}" />
         </a>
       </div>
