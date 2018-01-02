@@ -11,13 +11,13 @@
   </head>
   <body>
     <div style="position:relative;min-height:100vh;overflow-x:hidden;">
-      <div class="text-center" style="margin:45px 0 30px;"><h2>在线网页代理</h2></div>
+      <div class="text-center" style="margin:45px 0 30px;"><h2><a href="/" rel="home">在线网页代理</a></h2></div>
       <div class="text-center">
-        <a target="_self" href="/">
-          <img width="300" height="80" src="{{ logo }}" />
+        <a target="_blank" href="https://s.click.taobao.com/t?e=m%3D2%26s%3D05nbWrmohH4cQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClArEVyXG2iE4hqqacliaqsdBvfiy%2F4trK8zo9t866U1ORQVUdI%2BBf9CBmuFrWaviWBhmIkXBqRClNTcEU%2BDykfuSM%2BhtH71aX6uIOTs4KMj3yjpOyWSRdiSZDEm2YKA6YIrbIzrZDfgWtwGXLU4WXsy8CZuZoOOkzXFxfvOyje0ynomfkDJRs%2BhU%3D">
+          <img width="300" src="https://gw.alipayobjects.com/zos/rmsportal/mLMbolszoKKAPHiClcvt.jpg" />
         </a>
       </div>
-      <form class="form-horizontal" style="margin:0;padding:45px 0;">
+      <form class="form-horizontal" style="margin:0;padding:30px 0;">
         <div class="form-group">
           <div class="col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1">
             <input type="url" class="form-control" name="target" required placeholder="输入URL，例如 https://www.google.com.hk">
