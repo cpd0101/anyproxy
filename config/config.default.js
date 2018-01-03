@@ -3,7 +3,7 @@ const url = require('url');
 
 const WHITE_LIST = [
   '/',
-  '/feedback',
+  '/feedback.html',
   '/ss/getconfig',
   '/ss/getip',
 ];
