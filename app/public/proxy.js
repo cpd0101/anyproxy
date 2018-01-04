@@ -87,40 +87,42 @@
   if (!toBoolean(query.noframe)) {
     window._hmt = window._hmt || [];
 
-    var adsHtml = $('<div style="display:none;position:fixed;bottom:32px;right:32px;z-index:999;">' +
-      '<span class="ads-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;cursor:pointer;">' +
-        '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
-      '</span>' +
-      '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html" />' +
-    '</div>');
-    adsHtml.on('click', function (e) {
-      adsHtml.remove();
-      _hmt.push(['_trackEvent', 'ads', 'access']);
-    }).on('click', '.ads-close', function (e) {
-      e.stopImmediatePropagation();
-      e.stopPropagation();
-      adsHtml.remove();
-      _hmt.push(['_trackEvent', 'ads', 'close']);
-      return false;
-    });
-    window.onmessage = function (e) {
-      if (e.data && e.data === 'click') {
+    if (navigator.serviceWorker) {
+      var adsHtml = $('<div style="display:none;position:fixed;bottom:32px;right:32px;z-index:999;">' +
+        '<span class="ads-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;cursor:pointer;">' +
+          '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
+        '</span>' +
+        '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html" />' +
+      '</div>');
+      adsHtml.on('click', function (e) {
+        adsHtml.remove();
         _hmt.push(['_trackEvent', 'ads', 'access']);
-        return;
-      }
-      if (e.data && e.data.indexOf('x') > 0) {
-        var arr = e.data.split('x');
-        var width = +arr[0] + 2;
-        var height = +arr[1] + 2;
-        if (width && height) {
-          adsHtml.find('#ads-iframe').width(width).height(height);
-          adsHtml.width(width).height(height).show();
-          _hmt.push(['_trackEvent', 'ads', 'show']);
+      }).on('click', '.ads-close', function (e) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        adsHtml.remove();
+        _hmt.push(['_trackEvent', 'ads', 'close']);
+        return false;
+      });
+      window.onmessage = function (e) {
+        if (e.data && e.data === 'click') {
+          _hmt.push(['_trackEvent', 'ads', 'access']);
+          return;
         }
-        return;
-      }
-    };
-    $('body').append(adsHtml);
+        if (e.data && e.data.indexOf('x') > 0) {
+          var arr = e.data.split('x');
+          var width = +arr[0] + 2;
+          var height = +arr[1] + 2;
+          if (width && height) {
+            adsHtml.find('#ads-iframe').width(width).height(height);
+            adsHtml.width(width).height(height).show();
+            _hmt.push(['_trackEvent', 'ads', 'show']);
+          }
+          return;
+        }
+      };
+      $('body').append(adsHtml);
+    }
 
     var backHtml = $('<div style="position:fixed;bottom:32px;right:32px;width:32px;height:32px;box-sizing:content-box;padding:8px;line-height:16px;text-align:center;background:#eee;opacity:0.7;cursor:pointer;z-index:9999;">' +
       '<span class="origin-back-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;">' +
