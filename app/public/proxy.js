@@ -96,7 +96,6 @@
       '</div>');
       adsHtml.on('click', function (e) {
         adsHtml.remove();
-        _hmt.push(['_trackEvent', 'ads', 'access']);
       }).on('click', '.ads-close', function (e) {
         e.stopImmediatePropagation();
         e.stopPropagation();
@@ -120,7 +119,7 @@
           var height = +arr[1] + 2;
           if (width && height) {
             adsHtml.width(width).height(height).find('#ads-iframe').width(width).height(height);
-            adsHtml.show().hide();
+            adsHtml.show();
           }
           return;
         }
