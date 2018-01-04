@@ -88,7 +88,7 @@
     window._hmt = window._hmt || [];
 
     if (navigator.serviceWorker) {
-      var adsHtml = $('<div style="display:none;visibility:hidden;position:fixed;bottom:32px;right:32px;z-index:999;">' +
+      var adsHtml = $('<div style="display:none;position:fixed;bottom:32px;right:32px;z-index:999;">' +
         '<span class="ads-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;cursor:pointer;">' +
           '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
         '</span>' +
@@ -110,8 +110,8 @@
           return;
         }
         if (e.data && e.data === 'show') {
+          adsHtml.show();
           _hmt.push(['_trackEvent', 'ads', 'show']);
-          adsHtml.css('visibility', 'visible');
           return;
         }
         if (e.data && e.data.indexOf('x') > 0) {
@@ -119,8 +119,7 @@
           var width = +arr[0] + 2;
           var height = +arr[1] + 2;
           if (width && height) {
-            adsHtml.find('#ads-iframe').width(width).height(height);
-            adsHtml.width(width).height(height).show();
+            adsHtml.width(width).height(height).find('#ads-iframe').width(width).height(height);
           }
           return;
         }
