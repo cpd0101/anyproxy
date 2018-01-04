@@ -293,9 +293,18 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
         if (detectHeader(response, 'content-encoding', 'gzip')) {
           const html = zlib.gunzipSync(buffer);
           let str = html.toString();
-          if (isGBK || (!isUTF8 && str.indexOf('�') !== -1)) {
-            isGBK = true;
-            str = iconv.decode(html, 'gbk');
+          if (!isUTF8) {
+            if (isGBK) {
+              str = iconv.decode(html, 'gbk');
+            } else {
+              if (str.indexOf('�') > -1) {
+                const tempStr = iconv.decode(html, 'gbk');
+                if (tempStr.indexOf('�') === -1) {
+                  isGBK = true;
+                  str = tempStr;
+                }
+              }
+            }
           }
           const doc = parse5.parse(str);
           handleNode(ctx, doc, true, target);
@@ -306,9 +315,18 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
           }
         } else {
           let str = buffer.toString();
-          if (isGBK || (!isUTF8 && str.indexOf('�') !== -1)) {
-            isGBK = true;
-            str = iconv.decode(buffer, 'gbk');
+          if (!isUTF8) {
+            if (isGBK) {
+              str = iconv.decode(buffer, 'gbk');
+            } else {
+              if (str.indexOf('�') > -1) {
+                const tempStr = iconv.decode(buffer, 'gbk');
+                if (tempStr.indexOf('�') === -1) {
+                  isGBK = true;
+                  str = tempStr;
+                }
+              }
+            }
           }
           const doc = parse5.parse(str);
           handleNode(ctx, doc, true, target);
