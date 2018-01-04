@@ -4,9 +4,10 @@ const stream = require('stream');
 const url = require('url');
 const zlib = require('zlib');
 const iconv = require('iconv-lite');
+const jschardet = require('jschardet');
+const parse5 = require('parse5');
 const httpProxy = require('http-proxy-self');
 const httpMocks = require('node-mocks-http-self');
-const parse5 = require('parse5');
 const DOMAIN_WHITE_LIST = require('../common/common').DOMAIN_WHITE_LIST;
 
 let web_o = require('http-proxy-self/lib/http-proxy/passes/web-outgoing');

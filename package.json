@@ -9,6 +9,7 @@
     "egg-view-nunjucks": "^2.1.4",
     "http-proxy-self": "^1.16.3",
     "iconv-lite": "^0.4.19",
+    "jschardet": "^1.6.0",
     "node-mocks-http-self": "^1.6.7",
     "parse5": "^3.0.3"
   },
