@@ -104,13 +104,20 @@
       return false;
     });
     window.onmessage = function (e) {
+      if (e.data && e.data === 'click') {
+        _hmt.push(['_trackEvent', 'ads', 'access']);
+        return;
+      }
       if (e.data && e.data.indexOf('x') > 0) {
         var arr = e.data.split('x');
         var width = +arr[0] + 2;
         var height = +arr[1] + 2;
-        adsHtml.find('#ads-iframe').width(width).height(height);
-        adsHtml.width(width).height(height).show();
-        _hmt.push(['_trackEvent', 'ads', 'show']);
+        if (width && height) {
+          adsHtml.find('#ads-iframe').width(width).height(height);
+          adsHtml.width(width).height(height).show();
+          _hmt.push(['_trackEvent', 'ads', 'show']);
+        }
+        return;
       }
     };
     $('body').append(adsHtml);
