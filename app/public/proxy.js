@@ -120,6 +120,7 @@
           var height = +arr[1] + 2;
           if (width && height) {
             adsHtml.width(width).height(height).find('#ads-iframe').width(width).height(height);
+            adsHtml.show().hide();
           }
           return;
         }
