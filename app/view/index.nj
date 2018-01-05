@@ -29,11 +29,13 @@
         </div>
       </form>
       <div class="text-center">
+        <div><a id="alipay-hongbao" target="_blank" href="https://www.anyproxy.cn/jump.html" style="display:none;color:#d43f3a;text-decoration:underline;">一键领取支付宝现金红包</a></div>
+        <div><a id="alipay-reward" target="_blank" href="https://www.anyproxy.cn/jump.html?url=aHR0cHM6Ly9xci5hbGlwYXkuY29tL3RzeDAxOTM2Mmhhbmd0YmJ4ZHg2Mzgx" style="display:none;color:#d43f3a;text-decoration:underline;">一键去支付宝进行红包打赏</a></div>
         <a id="ss-account" style="color:#d43f3a;text-decoration:underline;">免费领取 shadowsocks 配置账号</a>
       </div>
       <div class="text-center" style="padding:15px 0 0;">
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/bQSmwUHMdzWAmSvjVhse.jpg" />
-        <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/ZnDarcIpmNseplszZxZh.jpg" />
+        <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/YlzXRiDpvrdlxSBQmlke.png" />
       </div>
       <div class="text-center" style="padding:5px 10px;font-size:12px;">
         用支付宝扫一扫左边红包码，每天都能领取一个红包。<br />领取红包后可打赏给右边收钱码，帮助本站扩充带宽。
@@ -99,8 +101,34 @@
       }
       $('#banner-ads').on('click', function (e) {
         window._hmt = window._hmt || [];
-        _hmt.push(['_trackEvent', 'banner-ads', 'access', ]);
+        _hmt.push(['_trackEvent', 'banner-ads', 'access']);
       });
+      function is_android() {
+        var a = navigator.userAgent.toLowerCase();
+        if (/(Android|SymbianOS)/i.test(a)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      function is_ios() {
+        var a = navigator.userAgent.toLowerCase();
+        if (/iphone|ipad|ipod/i.test(a)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (is_android() || is_ios()) {
+        $('#alipay-hongbao').show().on('click', function (e) {
+          window._hmt = window._hmt || [];
+          _hmt.push(['_trackEvent', 'alipay-hongbao', 'click']);
+        });
+        $('#alipay-reward').show().on('click', function (e) {
+          window._hmt = window._hmt || [];
+          _hmt.push(['_trackEvent', 'alipay-reward', 'click']);
+        });
+      }
     </script>
     <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
     <script src="https://zz.bdstatic.com/linksubmit/push.js"></script>
