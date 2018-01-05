@@ -41,7 +41,7 @@ class SsserverController extends Controller {
       ctx.logger.error(e);
     }
     ctx.body = {
-      server: ip.ip || '47.88.58.234',
+      server: ip.ip || ctx.hostname,
       ...content,
       expiry_date: 'one day',
     };

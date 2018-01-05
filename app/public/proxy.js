@@ -92,10 +92,11 @@
         '<span class="ads-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;cursor:pointer;">' +
           '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
         '</span>' +
-        '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html" />' +
+        '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html?keyword=%E6%83%85%E8%B6%A3%E7%94%A8%E5%93%81" />' +
       '</div>');
       adsHtml.on('click', function (e) {
         adsHtml.remove();
+        _hmt.push(['_trackEvent', 'ads', 'close']);
       }).on('click', '.ads-close', function (e) {
         e.stopImmediatePropagation();
         e.stopPropagation();
