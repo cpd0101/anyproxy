@@ -264,10 +264,6 @@ async function doProxy(ctx, { whiteList, proxyPath, redirectRegex, targetRequest
     }
     delete proxyRes.headers['content-security-policy'];
     delete proxyRes.headers['content-security-policy-report-only'];
-    if (/^(4|5)[0-9]{2}$/.test(proxyRes.statusCode)) {
-      proxyRes.destroy(new Error(`${proxyRes.statusCode} ${proxyRes.statusMessage}`));
-      return;
-    }
     timerId = setTimeout(() => {
       proxyRes.destroy(new Error('Response Timeout'));
       return;
