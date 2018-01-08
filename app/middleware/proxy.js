@@ -167,8 +167,7 @@ function handleNode(ctx, node, recurve, target) {
   if (tagName === 'head') {
     let fragmentStr = `<script>window.DOMAIN_WHITE_LIST = ${DOMAIN_WHITE_LIST.toString()}</script>`;
     if (toBoolean(ctx.query.noframe)) {
-      fragmentStr += '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>' +
-        '<script>if (navigator.serviceWorker && location.protocol === "https:") { navigator.serviceWorker.register("/service-worker.js"); }</script>';
+      fragmentStr += '<script>typeof window.__defineGetter__ === "function" && window.__defineGetter__("self", function() { return window.top; })</script>';
     }
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];

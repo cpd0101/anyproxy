@@ -2,6 +2,10 @@
   var $ = window.jQuery.noConflict();
   var Cookies = window.Cookies.noConflict();
 
+  if (navigator.serviceWorker && location.protocol === 'https:') {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+
   function getQuery(search) {
     var match = null;
     var urlParams = {};
