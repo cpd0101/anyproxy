@@ -51,7 +51,7 @@ class SsserverController extends Controller {
     const ctx = this.ctx;
     const ip = ctx.query.ip || ctx.ip || '';
     const callback = ctx.query.callback || '';
-    const result = await ctx.curl(`http://ip.chinaz.com/ajaxsync.aspx?at=ipbatch&ip=${ip}&callback=${callback}`);
+    const result = await ctx.curl(`http://ip.chinaz.com/ajaxsync.aspx?at=ip&ip=${ip}&callback=${callback}`);
     ctx.status = result.status;
     ctx.set(result.headers);
     ctx.set('content-type', 'application/x-javascript');
