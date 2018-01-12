@@ -22,7 +22,7 @@
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
         <a target="_blank" href="https://www.anyproxy.cn/">Any小站</a>&nbsp;
-        <a target="_blank" href="/">{{ name }}</a>
+        <a target="_blank" href="https://www.anyproxy.top/">{{ name }}</a>
       </div>
     </div>
     <script type="text/javascript"> 
