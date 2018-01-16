@@ -4,7 +4,7 @@ this.addEventListener('fetch', function (event) {
   if (!/^http(s)?\:/.test(url)) {
     return;
   }
-  var reg = /^http(s)?\:\/\/([^\/]+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq|itc|sohucs|taobao|tmall|tencent)\.(cc|cn|com|net|org|top)/i;
+  var reg = /^http(s)?\:\/\/([^\/]+\.)?(anyproxy|proxyit|baidu|zhihu|sohu|alipayobjects|bdstatic|gtimg|qq|itc|sohucs|taobao|tmall|tencent|checkdomain)\.(cc|cn|com|net|org|top|de)/i;
   if (reg.test(url)) {
     return;
   }
