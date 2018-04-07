@@ -96,7 +96,7 @@
         '<span class="ads-close" style="position:absolute;top:0;right:-32px;width:28px;height:14px;line-height:14px;text-align:left;cursor:pointer;">' +
           '<div style="width:14px;font-size:12px;color:#555;background:#eee;text-align:center;">X</div>' +
         '</span>' +
-        '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html?keyword=%E5%B9%B4%E8%B4%A7%E8%8A%82" />' +
+        '<iframe id="ads-iframe" border="0" frameborder="0" scrolling="no" marginwidth="0" allowtransparency="true" marginheight="0" src="https://www.anyproxy.cn/ads.html" />' +
       '</div>');
       adsHtml.on('click', function (e) {
         adsHtml.remove();
