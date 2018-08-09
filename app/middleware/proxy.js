@@ -159,7 +159,7 @@ function handleNode(ctx, node, recurve, target) {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
       '<script src="/public/proxy.js"></script>' +
-      '<script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>';
+      '<script src="https://hm.baidu.com/hm.js?3991a85adce440fc1c3364e418952b18"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
     node.childNodes = node.childNodes.concat(fragment.childNodes);
@@ -367,7 +367,7 @@ module.exports = ({ whiteList = [], proxyPath, redirectRegex }) => {
       } catch (err) {
         ctx.body = `
           <h3 style="visibility:hidden;">${err.message}</h3>
-          <script src="https://hm.baidu.com/hm.js?9ec911f310714b9fcfafe801ba8ae42a"></script>
+          <script src="https://hm.baidu.com/hm.js?3991a85adce440fc1c3364e418952b18"></script>
           <script>
             var _hmt = _hmt || [];
             _hmt.push(['_trackEvent', '404', 'not-found']);
