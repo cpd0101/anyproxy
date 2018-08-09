@@ -33,15 +33,8 @@ class SsserverController extends Controller {
       return;
     }
     let ip = {};
-    try {
-      const result = await ctx.curl('http://ip.chinaz.com/getip.aspx');
-      const pat = /\{.*\}/;
-      ip  = (new Function('return ' + result.data.toString().match(pat)[0]))();
-    } catch (e) {
-      ctx.logger.error(e);
-    }
     ctx.body = {
-      server: ip.ip || ctx.hostname,
+      server: ip.ip || '47.88.58.234' || ctx.hostname,
       ...content,
       expiry_date: 'one day',
     };
