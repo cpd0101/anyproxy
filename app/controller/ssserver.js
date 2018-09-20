@@ -49,9 +49,10 @@ class SsserverController extends Controller {
 
   async getip() {
     const ctx = this.ctx;
+    const at = ctx.query.at || 'ip';
     const ip = ctx.query.ip || ctx.ip || '';
     const callback = ctx.query.callback || '';
-    const result = await ctx.curl(`http://ip.chinaz.com/ajaxsync.aspx?at=ip&ip=${ip}&callback=${callback}`);
+    const result = await ctx.curl(`http://ip.tool.chinaz.com/ajaxsync.aspx?at=${at}&ip=${ip}&callback=${callback}`);
     ctx.status = result.status;
     ctx.set(result.headers);
     ctx.set('content-type', 'application/x-javascript');
