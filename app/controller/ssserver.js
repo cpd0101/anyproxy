@@ -34,7 +34,7 @@ class SsserverController extends Controller {
     }
     let ip = {};
     ctx.body = {
-      server: ip.ip || '47.88.58.234' || ctx.hostname,
+      server: ip.ip || ctx.hostname,
       ...content,
       expiry_date: 'one day',
     };
