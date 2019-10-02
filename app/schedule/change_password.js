@@ -10,7 +10,7 @@ module.exports = {
   },
   async task(ctx) {
     const data = {
-      server_port: 8686,
+      server_port: 8387,
       password: Math.random().toString(36).substr(2),
       method: 'aes-256-cfb',
     };
