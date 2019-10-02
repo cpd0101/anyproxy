@@ -158,7 +158,7 @@ function handleNode(ctx, node, recurve, target) {
   if (tagName === 'body') {
     const fragmentStr = '<script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>' +
       '<script src="https://gw.alipayobjects.com/os/rmsportal/qJcJXiKVpwXIkTwucUKy.js"></script>' +
-      '<script src="/public/proxy.js"></script>' +
+      '<script src="/proxy.js"></script>' +
       '<script src="https://hm.baidu.com/hm.js?3991a85adce440fc1c3364e418952b18"></script>';
     const fragment = parse5.parseFragment(fragmentStr);
     node.childNodes = node.childNodes || [];
