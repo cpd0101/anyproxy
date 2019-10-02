@@ -44,13 +44,13 @@
         <img width="160" height="160" src="https://gw.alipayobjects.com/zos/rmsportal/VytWBrMrCuHMEPzHQDKV.png" />
       </div>
       <div class="text-center" style="padding:5px 10px 90px;font-size:12px;">
-        如果觉得本站还不错，请用微信扫一扫进行打赏。<br />若有任何建议或意见，请在底部 <a target="_blank" href="/feedback.html">意见反馈</a> 里留言。
+        如果觉得本站还不错，请用微信扫一扫进行打赏。<br />若有任何建议或意见，请在底部 <a target="_blank" href="/feedback">意见反馈</a> 里留言。
       </div>
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
         {{ name }}&nbsp;
         <a target="_blank" href="https://www.anyproxy.cn/">Any小站</a>&nbsp;
-        <a target="_blank" href="/feedback.html">意见反馈</a>
+        <a target="_blank" href="/feedback">意见反馈</a>
       </div>
     </div>
     <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
