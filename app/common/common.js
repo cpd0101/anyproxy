@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  getHostVar(ctx) {
+  getHostVar() {
     const name = 'AnyProxy';
     const logo = 'https://gw.alipayobjects.com/zos/rmsportal/MFrHApzagTDXZxzavQcR.png';
     return { name, logo };
