@@ -11,7 +11,7 @@
   </head>
   <body>
     <div style="position:relative;min-height:100vh;overflow-x:hidden;">
-      <div class="text-center" style="margin:45px 0 30px;"><h2><a href="https://www.anyproxy.top/" rel="home">在线网页代理</a></h2></div>
+      <div class="text-center" style="margin:45px 0 30px;"><h2><a href="/" rel="home">在线网页代理</a></h2></div>
       <div class="text-center">
         <a id="banner-ads" target="_blank" href="https://s.click.taobao.com/t?e=m%3D2%26s%3DRqR%2BysFEYjUcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAkjNGKt8VG7iYrjSExPu%2FtBvfiy%2F4trK8zo9t866U1ORQVUdI%2BBf9CBmuFrWaviWBhmIkXBqRClNTcEU%2BDykfuSM%2BhtH71aX6uIOTs4KMj3yjpOyWSRdiSZDEm2YKA6YIrbIzrZDfgWtwGXLU4WXsy%2FxG3IthwSaV9j%2FznazYW4VLNmFwzcjFAU%3D">
           <img width="300" src="https://gw.alipayobjects.com/zos/rmsportal/mLMbolszoKKAPHiClcvt.jpg" />
@@ -29,8 +29,8 @@
         </div>
       </form>
       <div class="text-center" style="line-height:1.8;">
-        <div><a id="alipay-hongbao" target="_blank" href="https://www.anyproxy.cn/jump.html" style="display:none;color:#d43f3a;text-decoration:underline;">一键领取支付宝现金红包</a></div>
-        <div><a id="alipay-reward" target="_blank" href="https://www.anyproxy.cn/jump.html?url=aHR0cHM6Ly9xci5hbGlwYXkuY29tL3RzeDAxOTM2Mmhhbmd0YmJ4ZHg2Mzgx" style="display:none;color:#d43f3a;text-decoration:underline;">一键去支付宝进行红包打赏</a></div>
+        <div><a id="alipay-hongbao" target="_blank" href="https://www.proxyit.top:334/jump.html" style="display:none;color:#d43f3a;text-decoration:underline;">一键领取支付宝现金红包</a></div>
+        <div><a id="alipay-reward" target="_blank" href="https://www.proxyit.top:334/jump.html?url=aHR0cHM6Ly9xci5hbGlwYXkuY29tL3RzeDAxOTM2Mmhhbmd0YmJ4ZHg2Mzgx" style="display:none;color:#d43f3a;text-decoration:underline;">一键去支付宝进行红包打赏</a></div>
         <a id="ss-account" style="color:#d43f3a;text-decoration:underline;">免费领取 shadowsocks 配置账号</a>
       </div>
       <div class="text-center" style="padding:15px 0 0;">
@@ -49,7 +49,7 @@
       <div class="text-center" style="position:absolute;bottom:0;width:100%;padding:15px 0;">
         &copy;{{ year }}&nbsp;
         {{ name }}&nbsp;
-        <a target="_blank" href="https://www.anyproxy.cn/">Any小站</a>&nbsp;
+        <a target="_blank" href="/index.html">Any小站</a>&nbsp;
         <a target="_blank" href="/feedback">意见反馈</a>
       </div>
     </div>

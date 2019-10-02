@@ -2,7 +2,7 @@
 
 module.exports = {
   getHostVar() {
-    const name = 'AnyProxy';
+    const name = '在线网页代理';
     const logo = 'https://gw.alipayobjects.com/zos/rmsportal/MFrHApzagTDXZxzavQcR.png';
     return { name, logo };
   },
