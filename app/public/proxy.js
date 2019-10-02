@@ -118,7 +118,7 @@
           _hmt.push(['_trackEvent', 'ads', 'show']);
           return;
         }
-        if (e.data && e.data.indexOf('x') > 0) {
+        if (e.data && typeof e.data.indexOf === 'function' && e.data.indexOf('x') > 0) {
           var arr = e.data.split('x');
           var width = +arr[0] + 2;
           var height = +arr[1] + 2;
