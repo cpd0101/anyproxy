@@ -2,10 +2,11 @@
 
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 module.exports = {
   schedule: {
-    cron: '0 4 * * *',
+    interval: '1h',
     type: 'worker',
   },
   async task(ctx) {
@@ -14,11 +15,18 @@ module.exports = {
       password: Math.random().toString(36).substr(2),
       method: 'aes-256-cfb',
     };
-    fs.writeFile(path.join(process.cwd(), 'app', 'config', 'ss-config.json'), JSON.stringify(data), err => {
+    const filePath = path.join(process.cwd(), 'app', 'config', 'ss-config.json');
+    fs.writeFile(filePath, JSON.stringify(data), err => {
       if (err) {
         ctx.logger.error(err);
         return;
       }
+      exec(`ssserver -c ${filePath} -d restart`, err => {
+        if (err) {
+          ctx.logger.error(err);
+          return;
+        }
+      });
     });
   },
 };

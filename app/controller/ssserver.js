@@ -36,7 +36,7 @@ class SsserverController extends Controller {
     ctx.body = {
       server: ip.ip || ctx.hostname,
       ...content,
-      expiry_date: 'one day',
+      expiry_date: 'one hour',
     };
   }
 
