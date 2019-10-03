@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>领取红包的路上</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <script src="https://open.mobile.qq.com/sdk/qqapi.js"></script>
+  <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
+</head>
+
+<body>
+  <script>
+    (function () {
+      var jump_url = "https://qr.alipay.com/c1x07349nmv6ni3cuyc6fd3";
+
+      function get_query(search) {
+        var match = null;
+        var urlParams = {};
+        var reg = /([^=&#]+)=([^&#]*)/ig;
+        var query = search.slice(1);
+        while (match = reg.exec(query)) {
+          urlParams[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+        }
+        return urlParams;
+      }
+
+      var query = get_query(location.search);
+      if (query.title != undefined) {
+        document.title = query.title;
+      }
+      if (query.url && typeof atob === 'function') {
+        try { jump_url = atob(query.url); } catch (e) { }
+      }
+
+      function is_weixin() {
+        if (/MicroMessenger/i.test(navigator.userAgent)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function is_mqq() {
+        if (/Mobile/i.test(navigator.userAgent) && /QQ/i.test(navigator.userAgent)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function is_android() {
+        var a = navigator.userAgent.toLowerCase();
+        if (/(Android|SymbianOS)/i.test(a)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function is_ios() {
+        var a = navigator.userAgent.toLowerCase();
+        if (/iphone|ipad|ipod/i.test(a)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function android_auto_jump() {
+        if (jump_url != "") {
+          if (typeof WeixinJSBridge != "undefined") {
+            WeixinJSBridge.invoke("jumpToInstallUrl", {}, function (e) { });
+          }
+          location.href = jump_url;
+        } else {
+          if (typeof WeixinJSBridge != "undefined") {
+            WeixinJSBridge.call("closeWindow");
+          }
+          window.close();
+        }
+      }
+
+      function ios_auto_jump() {
+        if (jump_url != "") {
+          location.href = jump_url;
+        } else {
+          if (typeof WeixinJSBridge != "undefined") {
+            WeixinJSBridge.call("closeWindow");
+          }
+          window.close();
+        }
+      }
+
+      function onAutoInit() {
+        if (is_android()) {
+          android_auto_jump();
+          return false;
+        }
+        if (is_ios()) {
+          ios_auto_jump();
+          return false;
+        }
+        if (jump_url != "") {
+          location.href = jump_url;
+        } else {
+          window.close();
+        }
+      }
+
+      if (is_weixin()) {
+        if (typeof WeixinJSBridge == "undefined") {
+          if (document.addEventListener) {
+            document.addEventListener("WeixinJSBridgeReady", onAutoInit);
+          } else if (document.attachEvent) {
+            document.attachEvent("WeixinJSBridgeReady", onAutoInit);
+            document.attachEvent("onWeixinJSBridgeReady", onAutoInit);
+          }
+          return;
+        }
+      }
+
+      if (is_mqq()) {
+        if (typeof mqq == "undefined") {
+          if (document.addEventListener) {
+            document.addEventListener("qbrowserVisibilityChange", function (e) {
+              if (e.hidden) {
+                onAutoInit();
+              }
+            });
+          } else if (document.attachEvent) {
+            document.attachEvent("qbrowserVisibilityChange", function (e) {
+              if (e.hidden) {
+                onAutoInit();
+              }
+            });
+          }
+          return;
+        } else {
+          mqq.invoke("ui", "openUrl", {
+            url: jump_url,
+            target: 2,
+            style: 0
+          });
+        }
+      }
+
+      $(function () {
+        onAutoInit();
+      });
+    })();
+  </script>
+  <script src="https://hm.baidu.com/hm.js?3991a85adce440fc1c3364e418952b18"></script>
+</body>
+
+</html>

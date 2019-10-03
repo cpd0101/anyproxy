@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> GOLDEN TAOKE &gt; ARBITER &gt; ArbiterEntityView - Powered By Arbiter </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="https://gw.alipayobjects.com/os/rmsportal/JdEpaOqbNgKDgeKLvRXV.js"></script>
+</head>
+
+<body style="margin:0;" marginwidth="0" marginheight="0">
+  <a id="ads" data-type="2" biz-keyword="" data-tmpl="220x150" data-tmplid="8" data-rd="2" data-style="2" data-border="1" href="#"></a>
+  <script>
+    if (navigator.serviceWorker && location.protocol === 'https:') {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+    function getQuery(search) {
+      var match = null;
+      var urlParams = {};
+      var reg = /([^=&#]+)=([^&#]*)/ig;
+      var query = search.slice(1);
+      while (match = reg.exec(query)) {
+        urlParams[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+      }
+      return urlParams;
+    }
+    var query = getQuery(location.search);
+    $('#ads').attr('biz-keyword', query.keyword);
+    var parentwin = window.parent;
+    if (navigator.serviceWorker && location.protocol === 'https:') {
+      parentwin.postMessage($('#ads').attr('data-tmpl'), '*');
+      var intervalId = setInterval(function () {
+        var iframe = $('iframe').contents().get(0);
+        if (iframe) {
+          clearInterval(intervalId);
+          setTimeout(function (e) {
+            iframe.onclick = function (e) {
+              parentwin.postMessage('click', '*');
+            };
+          }, 1000);
+          parentwin.postMessage('show', '*');
+        }
+      }, 1000 / 60);
+    }
+  </script>
+  <script type="text/javascript">
+    (function (win, doc) {
+      var s = doc.createElement("script"), h = doc.getElementsByTagName("head")[0];
+      if (!win.alimamatk_show) {
+        s.charset = "gbk";
+        s.async = true;
+        s.src = "https://alimama.alicdn.com/tkapi.js";
+        h.insertBefore(s, h.firstChild);
+      };
+      var o = {
+        pid: "mm_67147173_41344863_179490494",
+        appkey: "24750911",
+        type: "click",
+        monitor: function (msg) {
+          // console.log(msg);
+        }
+      };
+      win.alimamatk_onload = win.alimamatk_onload || [];
+      win.alimamatk_onload.push(o);
+    })(window, document);
+  </script>
+  <script src="https://hm.baidu.com/hm.js?3991a85adce440fc1c3364e418952b18"></script>
+</body>
+
+</html>
